@@ -18,7 +18,6 @@ var scoreText;
 var gameTimer;
 var gameTime = 0;
 var timerText;
-var stage;
 var ground;
 
 window.onload = function()
@@ -52,45 +51,45 @@ window.onload = function()
         {id: 'shot', src: 'assets/shot.mp3'},
         {id: 'background', src: 'assets/countryside.mp3'},
         {id: 'gameOverSound', src: 'assets/gameOver.mp3'},
-        {id: 'tick', src: 'assets/tick.mp3'},
         {id: 'deathSound', src: 'assets/die.mp3'},
         {id: 'batSpritesheet', src: 'assets/batSpritesheet.png'},
         {id: 'batDeath', src: 'assets/batDeath.png'},
     ]);
     queue.load();
 
-    /*
-     *      Create a timer that updates once per second
-     *
-     */
-    gameTimer = setInterval(updateTime, 1000);
+    
+    //  *      Create a timer that updates once per second
+    //  *
+     
+    // gameTimer = setInterval(updateTime, 1000);
 
 }
 
 function queueLoaded(event)
 {
     // Add background image
-    var ground = new createjs.Bitmap(queue.getResult("backgroundImage"))
-    stage.addChild(ground);
+    // var ground = new createjs.Bitmap(queue.getResult("backgroundImage"))
 
     // examples.hideDistractor();
 
+    var groundImg = queue.getResult("backgroundImage");
     ground = new createjs.Shape();
-    ground.graphics.beginBitmapFill(groundImg).drawRect(0, 0,groundImg.width,  HEIGHT + groundImg.height);
+    ground.graphics.beginBitmapFill(groundImg).drawRect(0, -225, WIDTH + groundImg.width,  HEIGHT + groundImg.height);
     ground.tileH = groundImg.height;
-    ground.x = WIDTH - groundImg.width;
+    ground.y = groundImg.width;
 
+    stage.addChild(ground);
     //Add Score
     scoreText = new createjs.Text("1UP: " + score.toString(), "36px Arial", "#FFF");
     scoreText.x = 10;
     scoreText.y = 10;
     stage.addChild(scoreText);
 
-    //Ad Timer
-    timerText = new createjs.Text("Time: " + gameTime.toString(), "36px Arial", "#FFF");
-    timerText.x = 800;
-    timerText.y = 10;
-    stage.addChild(timerText);
+    // //Ad Timer
+    // timerText = new createjs.Text("Time: " + gameTime.toString(), "36px Arial", "#FFF");
+    // timerText.x = 800;
+    // timerText.y = 10;
+    // stage.addChild(timerText);
 
     // Play background sound
     createjs.Sound.play("background", {loop: -1});
@@ -112,13 +111,11 @@ function queueLoaded(event)
     // Create bat sprite
     createEnemy();
 
-   /*
+   
     // Create crosshair
     crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
-    crossHair.x = WIDTH/2;
-    crossHair.y = HEIGHT/2;
     stage.addChild(crossHair);
-    */
+    
 
     // Add ticker
     createjs.Ticker.setFPS(15);
@@ -134,7 +131,7 @@ function createEnemy()
 {
 	animation = new createjs.Sprite(spriteSheet, "flap");
     animation.regX = 99;
-    animation.regY = 58;
+    animation.regY = 250;
     animation.x = enemyXPos;
     animation.y = enemyYPos;
     animation.gotoAndPlay("flap");
@@ -152,8 +149,12 @@ function batDeath()
   stage.addChild(deathAnimation);
 }
 
-function tickEvent()
+function tickEvent(event)
 {
+    var deltaS = event.delta / 1000;
+
+    ground.y = (ground.y + deltaS * 75) % ground.tileH;
+
 	//Make sure enemy bat is within game boundaries and move enemy Bat
 	if(enemyXPos < WIDTH && enemyXPos > 0)
 	{
@@ -175,7 +176,7 @@ function tickEvent()
 	animation.x = enemyXPos;
 	animation.y = enemyYPos;
 
-	
+	// stage.update(event);
 }
 
 
@@ -192,30 +193,30 @@ function handleMouseDown(event)
     
     //Display CrossHair
     crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
-    crossHair.x = event.clientX-200;
-    crossHair.y = event.clientY+10;
+    crossHair.x = event.clientX-218;
+    crossHair.y = event.clientY-52;
     stage.addChild(crossHair);
     createjs.Tween.get(crossHair).to({alpha: 0},1000);
     
     //Play Gunshot sound
     createjs.Sound.play("shot");
 
-    //Increase speed of enemy slightly
-    enemyXSpeed *= 1.05;
-    enemyYSpeed *= 1.06;
+    // //Increase speed of enemy slightly
+    // enemyXSpeed *= 1.05;
+    // enemyYSpeed *= 1.06;
 
     //Obtain Shot position
-    var shotX = Math.round(event.clientX);
-    var shotY = Math.round(event.clientY);
+    var shotX = event.clientX-218;
+    var shotY = event.clientY-52;
     var spriteX = Math.round(animation.x);
     var spriteY = Math.round(animation.y);
 
-    // Compute the X and Y distance using absolte value
+    // Compute the X and Y distance using absolute value
     var distX = Math.abs(shotX - spriteX);
     var distY = Math.abs(shotY - spriteY);
 
     // Anywhere in the body or head is a hit - but not the wings
-    if(distX < 30 && distY < 59 )
+    if(distX < 10 && distY < 10 )
     {
     	//Hit
     	stage.removeChild(animation);
@@ -224,9 +225,9 @@ function handleMouseDown(event)
     	scoreText.text = "1UP: " + score.toString();
     	createjs.Sound.play("deathSound");
     	
-        //Make it harder next time
-    	enemyYSpeed *= 1.25;
-    	enemyXSpeed *= 1.3;
+     //    //Make it harder next time
+    	// enemyYSpeed *= 1.25;
+    	// enemyXSpeed *= 1.3;
 
     	//Create new enemy
     	var timeToCreate = Math.floor((Math.random()*3500)+1);
@@ -239,29 +240,28 @@ function handleMouseDown(event)
     	scoreText.text = "1UP: " + score.toString();
 
     }
+    
 }
 
-function updateTime()
-{
-	gameTime += 1;
-	if(gameTime > 60)
-	{
-		//End Game and Clean up
-		timerText.text = "GAME OVER";
-		stage.removeChild(animation);
-		stage.removeChild(crossHair);
-        createjs.Sound.removeSound("background");
-        var si =createjs.Sound.play("gameOverSound");
-		clearInterval(gameTimer);
-	}
-	else
-	{
-		timerText.text = "Time: " + gameTime
-    createjs.Sound.play("tick");
-	}
-
+// function updateTime()
+// {
+//     gameTime += 1;
+//     if(gameTime > 60)
+//     {
+//         //End Game and Clean up
+//         timerText.text = "GAME OVER";
+//         stage.removeChild(animation);
+//         stage.removeChild(crossHair);
+//         createjs.Sound.removeSound("background");
+//         var si =createjs.Sound.play("gameOverSound");
+//         clearInterval(gameTimer);
+//     }
+//     else
+//     {
+//         timerText.text = "Time: " + gameTime
+//         createjs.Sound.play("tick");
+//     }
  
-}
 // var stage, w, h, loader;
 // var sky, grant, ground, hill, hill2;
 
