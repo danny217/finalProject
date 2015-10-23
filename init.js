@@ -131,7 +131,7 @@ function createEnemy()
 {
 	animation = new createjs.Sprite(spriteSheet, "flap");
     animation.regX = 99;
-    animation.regY = 250;
+    animation.regY = 58;
     animation.x = enemyXPos;
     animation.y = enemyYPos;
     animation.gotoAndPlay("flap");

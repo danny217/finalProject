@@ -3,7 +3,7 @@ body {
   margin:0;
   background:#000;
 }
-#myCanvas   {
+#myCanvas {
   display: block;
   margin:5px auto 0;
   border:1px solid #000;
@@ -17,4 +17,57 @@ body {
 	width: 100px;
 	height: 100px;
 	background-color: blue;
-}          
+}    
+.container {
+	width: 100%;
+	height: 100%;
+	display: none;
+}   
+.container.on {
+	display: inline;
+}
+
+.shield {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+/*	margin: 0 auto;*/
+	background-color: black;
+	width: 600px;
+	height: 900px;
+	overflow: hidden;
+	transform: translate(-50%, -50%);
+}   
+
+.login_container {
+	color: white;
+	position: relative;
+    top: -700px; 
+    z-index: 9999;
+    text-align: center; 
+	margin-left: 20px;
+}
+
+.login_container button {
+	color: black;
+	padding-top: 7px;
+	border-radius: 5px;
+}
+
+.login {
+	/*font-family: 'Indie Flower', cursive;*/
+	/*font-family: 'Kaushan Script', cursive;*/
+	font-family: 'Luckiest Guy', cursive;
+	font-size: 20pt;
+	border-radius: 5px;
+	margin: 10px;
+}
+
+#shield {
+	width: 600px;
+	height: 900px;
+}
+
+input button {
+	display: block;
+}
