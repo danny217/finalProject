@@ -14,6 +14,7 @@ create table Levels(
 	background varchar(255),
 	enemyNum int,
 	enemyLvlMax int,
+	enemiesAllowed int,
 	enemyApproachSpeed int,
 	maxScore int
 

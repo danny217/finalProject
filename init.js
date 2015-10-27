@@ -10,15 +10,25 @@ var animation;
 var deathAnimation;
 var spriteSheet;
 var enemyXPos=100;
-var enemyYPos=100;
+var enemyYPos=50;
 var enemyXSpeed = 1.5;
-var enemyYSpeed = 1.75;
+var enemyYSpeed = 1.5;
 var score = 0;
 var scoreText;
-var gameTimer;
-var gameTime = 0;
-var timerText;
+var missed = 0;
+var slippedByText;
 var ground;
+var allowed = 5;
+var lvl = 1;
+var timerSource; //references a setInterval method
+var enemies = [];
+var enTimer = null; // random timer for a new enemy
+var enemyCount = 0;
+
+// get random number between X and Y
+    function getRand(x, y) {
+        return Math.floor(Math.random()*y)+x;
+    }
 
 window.onload = function()
 {
@@ -52,7 +62,7 @@ window.onload = function()
         {id: 'background', src: 'assets/countryside.mp3'},
         {id: 'gameOverSound', src: 'assets/gameOver.mp3'},
         {id: 'deathSound', src: 'assets/die.mp3'},
-        {id: 'batSpritesheet', src: 'assets/batSpritesheet.png'},
+        {id: 'red', src: 'assets/red_enemy.png'},
         {id: 'batDeath', src: 'assets/batDeath.png'},
     ]);
     queue.load();
@@ -85,58 +95,205 @@ function queueLoaded(event)
     scoreText.y = 10;
     stage.addChild(scoreText);
 
-    // //Ad Timer
-    // timerText = new createjs.Text("Time: " + gameTime.toString(), "36px Arial", "#FFF");
-    // timerText.x = 800;
-    // timerText.y = 10;
-    // stage.addChild(timerText);
+    //Add Score
+    slippedByText = new createjs.Text("Enemies Missed: " + missed.toString(), "36px Arial", "#FFF");
+    slippedByText.x = 650;
+    slippedByText.y = 10;
+    stage.addChild(slippedByText);
 
     // Play background sound
-    createjs.Sound.play("background", {loop: -1});
+    // createjs.Sound.play("background", {loop: -1});
 
-    // Create bat spritesheet
-    spriteSheet = new createjs.SpriteSheet({
-        "images": [queue.getResult('batSpritesheet')],
-        "frames": {"width": 198, "height": 117},
-        "animations": { "flap": [0,4] }
-    });
 
     // Create bat death spritesheet
     batDeathSpriteSheet = new createjs.SpriteSheet({
-    	"images": [queue.getResult('batDeath')],
-    	"frames": {"width": 198, "height" : 148},
-    	"animations": {"die": [0,7, false,1 ] }
+        "images": [queue.getResult('batDeath')],
+        "frames": {"width": 198, "height" : 148},
+        "animations": {"die": [0,7, false,1 ] }
     });
 
-    // Create bat sprite
-    createEnemy();
+    // Create enemy sprite
+    // var enemy = createEnemy();
+    // enemy = Math.random() * (320 - 50);
+    for(enemyCount = 0; enemyCount <= 5; enemyCount++){
+        randomEnemy();
+    }
+    // stage.addChild(animation);
 
-   
-    // Create crosshair
-    crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
-    stage.addChild(crossHair);
+    // // Create crosshair
+    // crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
+    // stage.addChild(crossHair);
     
 
     // Add ticker
     createjs.Ticker.setFPS(15);
     createjs.Ticker.addEventListener('tick', stage);
     createjs.Ticker.addEventListener('tick', tickEvent);
+    // createjs.Ticker.addEventListener('tick', enemyEvent);
+    createjs.Ticker.addEventListener('tick', offScreen);
+    // createjs.Ticker.addEventListener('tick', randomEnemy);
+    // createjs.Ticker.addEventListener('tick', this.pass);
 
     // Set up events AFTER the game is loaded
    // window.onmousemove = handleMouseMove;
     window.onmousedown = handleMouseDown;
 }
 
+function Enemy(x, y, w, h, speed) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+
+        this.speed = speed;
+
+    }
+
+function randomEnemy(){
+
+    clearInterval(enTimer);
+        var randX = getRand(0, context.canvas.height - 78);
+        enemies.push(new Enemy(randX, 0, 63, 78, (enemyXSpeed + enemyYSpeed)-5));
+        var interval = getRand(1000, 4000);
+        enTimer = setInterval(createEnemy, interval); // loop
+
+    // for(i = 0; i <= 5; i++){
+    //     // Create enemy sprite
+    //     var enemy = createEnemy();
+    //     enemy = Math.random() * (320 - 50);
+    // }
+}
+// function enemyRed(){
+//     var hp = 1;
+
+//     console.log("are you kiddin again?");
+
+//     spriteSheet = new createjs.SpriteSheet({
+//     "images": [queue.getResult('red')],
+//     "frames": {"width": 134, "height": 158},
+//     "animations": { "walk": [0,2] },
+//     framerate: 6
+//     });
+
+//     createjs.Ticker.addEventListener('tick', enemyEvent);
+
+//     // createjs.Ticker.addEventListener('tick', offScreen);
+
+// } 
+
+
+function typeEnemy(lvl)
+{
+    // this.lvl = lvl;
+    lvl = 1;
+    console.log("hmmm");
+    if(lvl = 1 ){
+    console.log("are you kiddin?");
+        
+    
+        var hp = 1;
+
+        console.log("are you kiddin again?");
+
+        spriteSheet = new createjs.SpriteSheet({
+        "images": [queue.getResult('red')],
+        "frames": {"width": 134, "height": 158},
+        "animations": { "walk": [0,2] },
+        framerate: 6
+        });
+
+        animation = new createjs.Sprite(spriteSheet, "walk");
+        animation.regX = 63;
+        animation.regY = 78;
+        animation.gotoAndPlay("walk");
+
+        animation.x = getRand(0, context.canvas.height - 78);
+        animation.y = getRand(0, context.canvas.height - 78);
+        // enemyXPos = animation.x;
+        // enemyYPos = animation.y;
+        animation.x = enemyXPos;
+        animation.y = enemyYPos;
+
+        stage.addChild(animation);
+        // createjs.Ticker.addEventListener('tick', enemyEvent);
+
+        // stage.update(event);
+        // createjs.EventDispatcher.initialize(typeEnemy); // add to a specific instance
+        function enemyEvent(){
+        //Make sure enemy is within game boundaries and move enemy 
+            if(enemyXPos < WIDTH && enemyXPos > 0)
+            {
+                enemyXPos += enemyXSpeed;
+            } else 
+            {
+                enemyXSpeed = enemyXSpeed * (-1);
+                enemyXPos += enemyXSpeed;
+            }
+            if(enemyYPos < HEIGHT && enemyYPos > 0)
+            {
+                enemyYPos += enemyYSpeed;
+            }
+
+            createjs.Ticker.addEventListener('tick', offScreen);
+            } 
+
+        }
+    
+    // this.dispatchEvent(enemyEvent);
+    // if(lvl = 2 ){
+
+    //     function enemyBlue(){
+    //         var hp = 3;
+    //         var enemy = 1;
+
+    //         if(enemyYPos > HEIGHT && enemyYPos < 0 ){
+    //             missed += enemy;
+    //             slippedByText.text = "Enemies Missed: " + missed.toString();
+    //             delete enemyBlue();
+    //         }
+    //     }
+    // }
+    // animation = new createjs.Sprite(spriteSheet, "walk");
+    // animation.regX = 63;
+    // animation.regY = 78;
+    // animation.x = enemyXPos;
+    // animation.y = enemyYPos;
+    // animation.gotoAndPlay("walk");
+    // stage.addChildAt(animation, 3);
+}
+
 function createEnemy()
 {
-	animation = new createjs.Sprite(spriteSheet, "flap");
-    animation.regX = 99;
-    animation.regY = 58;
-    animation.x = enemyXPos;
-    animation.y = enemyYPos;
-    animation.gotoAndPlay("flap");
-    stage.addChildAt(animation,1);
+    typeEnemy();
 }
+
+function offScreen(){
+    // for (var ekey in enemies) {
+    //     if (enemies[ekey] != undefined) {
+            if(enemyYPos > HEIGHT && enemyYPos > 0 )  
+            {
+                createjs.Ticker.reset('tick');
+                missed += 1;
+                slippedByText.text = "Enemies Missed: " + missed.toString();
+                // animation.x = enemyXPos;
+                // animation.y = enemyYPos;
+                // delete enemies[ekey];
+                //Remove the sprite
+                stage.removeChild(animation);
+                createjs.Ticker.addEventListener('tick', stage);
+                createjs.Ticker.addEventListener('tick', tickEvent);
+                stage.update();
+                // createjs.Ticker.addEventListener('tick', enemyEvent);
+                // createjs.Ticker.addEventListener('tick', createEnemy);
+            }
+}
+    //     }
+    // }
+// function deleteEnemy()
+// {
+//     stage.removeChild(animation);
+//     delete this;
+// }
 
 function batDeath()
 {
@@ -149,33 +306,37 @@ function batDeath()
   stage.addChild(deathAnimation);
 }
 
+// function enemyEvent()
+// {
+
+//     //Make sure enemy is within game boundaries and move enemy 
+//     if(enemyXPos < WIDTH && enemyXPos > 0)
+//     {
+//         enemyXPos += enemyXSpeed;
+//     } else 
+//     {
+//         enemyXSpeed = enemyXSpeed * (-1);
+//         enemyXPos += enemyXSpeed;
+//     }
+//     if(enemyYPos < HEIGHT && enemyYPos > 0)
+//     {
+//         enemyYPos += enemyYSpeed;
+//     }
+
+//     animation.x = enemyXPos;
+//     animation.y = enemyYPos;
+
+// }
+
+// Ticker.setPaused(true);
+
 function tickEvent(event)
 {
     var deltaS = event.delta / 1000;
 
     ground.y = (ground.y + deltaS * 75) % ground.tileH;
 
-	//Make sure enemy bat is within game boundaries and move enemy Bat
-	if(enemyXPos < WIDTH && enemyXPos > 0)
-	{
-		enemyXPos += enemyXSpeed;
-	} else 
-	{
-		enemyXSpeed = enemyXSpeed * (-1);
-		enemyXPos += enemyXSpeed;
-	}
-	if(enemyYPos < HEIGHT && enemyYPos > 0)
-	{
-		enemyYPos += enemyYSpeed;
-	} else
-	{
-		enemyYSpeed = enemyYSpeed * (-1);
-		enemyYPos += enemyYSpeed;
-	}
-
-	animation.x = enemyXPos;
-	animation.y = enemyYPos;
-
+    // stage.update();
 	// stage.update(event);
 }
 
@@ -215,7 +376,7 @@ function handleMouseDown(event)
     var distX = Math.abs(shotX - spriteX);
     var distY = Math.abs(shotY - spriteY);
 
-    // Anywhere in the body or head is a hit - but not the wings
+    // Anywhere in the body or head is a hit 
     if(distX < 10 && distY < 10 )
     {
     	//Hit
