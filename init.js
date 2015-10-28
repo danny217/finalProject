@@ -24,11 +24,14 @@ var timerSource; //references a setInterval method
 var enemies = [];
 var enTimer = null; // random timer for a new enemy
 var enemyCount = 0;
+var i = 0;
+var heroXPos=470;
+var heroYPos=500;
 
 // get random number between X and Y
-    function getRand(x, y) {
-        return Math.floor(Math.random()*y)+x;
-    }
+function getRand(x, y) {
+    return Math.floor(Math.random()*y)+x;
+}
 
 window.onload = function()
 {
@@ -63,7 +66,8 @@ window.onload = function()
         {id: 'gameOverSound', src: 'assets/gameOver.mp3'},
         {id: 'deathSound', src: 'assets/die.mp3'},
         {id: 'red', src: 'assets/red_enemy.png'},
-        {id: 'batDeath', src: 'assets/batDeath.png'},
+        {id: 'hero', src: 'assets/hero.png'},
+        {id: 'checkmark', src: 'assets/checkmark.png'},
     ]);
     queue.load();
 
@@ -97,76 +101,69 @@ function queueLoaded(event)
 
     //Add Score
     slippedByText = new createjs.Text("Enemies Missed: " + missed.toString(), "36px Arial", "#FFF");
-    slippedByText.x = 650;
+    slippedByText.x = 625;
     slippedByText.y = 10;
     stage.addChild(slippedByText);
 
     // Play background sound
     // createjs.Sound.play("background", {loop: -1});
 
-
-    // Create bat death spritesheet
-    batDeathSpriteSheet = new createjs.SpriteSheet({
-        "images": [queue.getResult('batDeath')],
-        "frames": {"width": 198, "height" : 148},
-        "animations": {"die": [0,7, false,1 ] }
+    // hero sprite sheet
+    hero = new createjs.SpriteSheet({
+        "images": [queue.getResult('hero')],
+        "frames": {"width": 134, "height" : 158},
+        "animations": {"walk1": [0,2] },
+        framerate: 3
     });
 
-    // Create enemy sprite
-    // var enemy = createEnemy();
-    // enemy = Math.random() * (320 - 50);
-    for(enemyCount = 0; enemyCount <= 5; enemyCount++){
-        randomEnemy();
-    }
-    // stage.addChild(animation);
-
-    // // Create crosshair
-    // crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
-    // stage.addChild(crossHair);
     
+    heroAni = new createjs.Sprite(hero, "walk1");
+    heroAni.regX = 63;
+    heroAni.regY = 78;
+    heroAni.gotoAndPlay("walk1");
+
+    heroAni.x = stage.canvas.width/2;
+    // heroAni.y = getRand(0, WIDTH);
+    // enemyXPos = heroAni.x;
+    // enemyYPos = heroAni.y;
+    heroAni.x = heroXPos;
+    heroAni.y = heroYPos;
+
+    stage.addChild(heroAni);
+
+    //Now we create a Text object, used for displaying some debug details
+
+        textOut = new createjs.Text("Debug","24px Arial","red");
+
+        textOut.x = 5;
+
+        textOut.y = 5;
+
+        textOut.maxWidth = 390;
+
+        stage.addChild(textOut);
+    // Create crosshair
+    crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
+    stage.addChild(crossHair);
+    
+    checkmark = new createjs.Bitmap(queue.getResult("checkmark"));
+    stage.addChild(checkmark);
 
     // Add ticker
-    createjs.Ticker.setFPS(15);
+    // createjs.Ticker.setFPS(15);
     createjs.Ticker.addEventListener('tick', stage);
+    createjs.Ticker.addEventListener('tick', enemyEvent);
     createjs.Ticker.addEventListener('tick', tickEvent);
-    // createjs.Ticker.addEventListener('tick', enemyEvent);
-    createjs.Ticker.addEventListener('tick', offScreen);
+    createjs.Ticker.addEventListener(onFrame);
     // createjs.Ticker.addEventListener('tick', randomEnemy);
     // createjs.Ticker.addEventListener('tick', this.pass);
-
+    stage.update();
     // Set up events AFTER the game is loaded
-   // window.onmousemove = handleMouseMove;
+    window.onmousemove = handleMouseMove;
     window.onmousedown = handleMouseDown;
 }
 
-function Enemy(x, y, w, h, speed) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-
-        this.speed = speed;
-
-    }
-
-function randomEnemy(){
-
-    clearInterval(enTimer);
-        var randX = getRand(0, context.canvas.height - 78);
-        enemies.push(new Enemy(randX, 0, 63, 78, (enemyXSpeed + enemyYSpeed)-5));
-        var interval = getRand(1000, 4000);
-        enTimer = setInterval(createEnemy, interval); // loop
-
-    // for(i = 0; i <= 5; i++){
-    //     // Create enemy sprite
-    //     var enemy = createEnemy();
-    //     enemy = Math.random() * (320 - 50);
-    // }
-}
-// function enemyRed(){
-//     var hp = 1;
-
-//     console.log("are you kiddin again?");
+// function heroMove(){
 
 //     spriteSheet = new createjs.SpriteSheet({
 //     "images": [queue.getResult('red')],
@@ -195,14 +192,7 @@ function typeEnemy(lvl)
 
         console.log("are you kiddin again?");
 
-        spriteSheet = new createjs.SpriteSheet({
-        "images": [queue.getResult('red')],
-        "frames": {"width": 134, "height": 158},
-        "animations": { "walk": [0,2] },
-        framerate: 6
-        });
-
-        animation = new createjs.Sprite(spriteSheet, "walk");
+        animation = new createjs.Sprite(enemy, "walk");
         animation.regX = 63;
         animation.regY = 78;
         animation.gotoAndPlay("walk");
@@ -219,23 +209,23 @@ function typeEnemy(lvl)
 
         // stage.update(event);
         // createjs.EventDispatcher.initialize(typeEnemy); // add to a specific instance
-        function enemyEvent(){
-        //Make sure enemy is within game boundaries and move enemy 
-            if(enemyXPos < WIDTH && enemyXPos > 0)
-            {
-                enemyXPos += enemyXSpeed;
-            } else 
-            {
-                enemyXSpeed = enemyXSpeed * (-1);
-                enemyXPos += enemyXSpeed;
-            }
-            if(enemyYPos < HEIGHT && enemyYPos > 0)
-            {
-                enemyYPos += enemyYSpeed;
-            }
+        // function enemyEvent(){
+        // //Make sure enemy is within game boundaries and move enemy 
+        //     if(enemyXPos < WIDTH && enemyXPos > 0)
+        //     {
+        //         enemyXPos += enemyXSpeed;
+        //     } else 
+        //     {
+        //         enemyXSpeed = enemyXSpeed * (-1);
+        //         enemyXPos += enemyXSpeed;
+        //     }
+        //     if(enemyYPos < HEIGHT && enemyYPos > 0)
+        //     {
+        //         enemyYPos += enemyYSpeed;
+        //     }
 
-            createjs.Ticker.addEventListener('tick', offScreen);
-            } 
+        //     createjs.Ticker.addEventListener('tick', offScreen);
+        //     } 
 
         }
     
@@ -267,34 +257,6 @@ function createEnemy()
     typeEnemy();
 }
 
-function offScreen(){
-    // for (var ekey in enemies) {
-    //     if (enemies[ekey] != undefined) {
-            if(enemyYPos > HEIGHT && enemyYPos > 0 )  
-            {
-                createjs.Ticker.reset('tick');
-                missed += 1;
-                slippedByText.text = "Enemies Missed: " + missed.toString();
-                // animation.x = enemyXPos;
-                // animation.y = enemyYPos;
-                // delete enemies[ekey];
-                //Remove the sprite
-                stage.removeChild(animation);
-                createjs.Ticker.addEventListener('tick', stage);
-                createjs.Ticker.addEventListener('tick', tickEvent);
-                stage.update();
-                // createjs.Ticker.addEventListener('tick', enemyEvent);
-                // createjs.Ticker.addEventListener('tick', createEnemy);
-            }
-}
-    //     }
-    // }
-// function deleteEnemy()
-// {
-//     stage.removeChild(animation);
-//     delete this;
-// }
-
 function batDeath()
 {
   deathAnimation = new createjs.Sprite(batDeathSpriteSheet, "die");
@@ -306,27 +268,81 @@ function batDeath()
   stage.addChild(deathAnimation);
 }
 
-// function enemyEvent()
-// {
+function enemyEvent()
+{   
+      
+    if(i % 50 == 0){
+        
+        enemy = new createjs.SpriteSheet({
+            "images": [queue.getResult('red')],
+            "frames": {"width": 134, "height": 158},
+            "animations": { "walk": [0,2] },
+            framerate: 6
+            });
 
-//     //Make sure enemy is within game boundaries and move enemy 
-//     if(enemyXPos < WIDTH && enemyXPos > 0)
-//     {
-//         enemyXPos += enemyXSpeed;
-//     } else 
-//     {
-//         enemyXSpeed = enemyXSpeed * (-1);
-//         enemyXPos += enemyXSpeed;
-//     }
-//     if(enemyYPos < HEIGHT && enemyYPos > 0)
-//     {
-//         enemyYPos += enemyYSpeed;
-//     }
+        animation = new createjs.Sprite(enemy, "walk");
+        animation.regX = 63;
+        animation.regY = 78;
+        animation.gotoAndPlay("walk");
 
-//     animation.x = enemyXPos;
-//     animation.y = enemyYPos;
+        animation.x = getRand(-1, 960);
+        // animation.y = getRand(960, -1);
+        // enemyXPos = animation.x;
+        // enemyYPos = animation.y;
+        // animation.x = enemyXPos;
+        // animation.y = enemyYPos;
 
-// }
+        // var badguy = new createjs.Bitmap("images/badguy.png");
+        // animation.x = getRand(-1,960)
+        // animation.scaleX = 0.25;
+        // animation.scaleY = 0.25;
+        enemies.push(animation);
+
+        stage.addChild(animation);
+        // stage.addChild(enemy);
+         
+    }
+    i++;
+    if (enemies.length > 0) {
+        for (var ekey in enemies) {
+               if (enemies[ekey] != undefined) {
+
+                    animation = enemies[ekey];
+
+                    if(animation.x < WIDTH && animation.x > 0)
+                        {
+                            animation.x;
+                        } else 
+                        {
+                            animation.x = animation.x * (-1);
+                            // animation.x = getRand(50, 150);
+                        }
+
+                    animation.y += 5;
+
+                    if(animation.y > HEIGHT && animation.y > 0 )  
+                        {
+                            // createjs.Ticker.reset('tick');
+                            missed += 1;
+                            slippedByText.text = "Enemies Missed: " + missed.toString();
+                            // animation.x = enemyXPos;
+                            // animation.y = enemyYPos;
+                            delete enemies[ekey];
+                            //Remove the sprite
+                            stage.removeChild(animation);
+                            // createjs.Ticker.addEventListener('tick', stage);
+                            // createjs.Ticker.addEventListener('tick', tickEvent);
+                            // createjs.Ticker.addEventListener('tick', enemyEvent);
+                            
+                            stage.update();
+                            // createjs.Ticker.addEventListener('tick', enemyEvent);
+                            // createjs.Ticker.addEventListener('tick', createEnemy);
+                        }
+                    
+                }
+            }
+        }
+}
 
 // Ticker.setPaused(true);
 
@@ -336,17 +352,103 @@ function tickEvent(event)
 
     ground.y = (ground.y + deltaS * 75) % ground.tileH;
 
+    createjs.Ticker.setFPS(30);
+
+    // if(i % 50 == 0){
+        
+    //     enemy = new createjs.SpriteSheet({
+    //     "images": [queue.getResult('red')],
+    //     "frames": {"width": 134, "height": 158},
+    //     "animations": { "walk": [0,2] },
+    //     framerate: 3
+    //     });
+
+    //     animation = new createjs.Sprite(enemy, "walk");
+    //     animation.regX = 63;
+    //     animation.regY = 78;
+    //     animation.gotoAndPlay("walk");
+
+    //     animation.x = getRand(0, context.canvas.height - 78);
+    //     animation.y = getRand(0, context.canvas.height - 78);
+    //     // enemyXPos = animation.x;
+    //     // enemyYPos = animation.y;
+    //     animation.x = enemyXPos;
+    //     animation.y = enemyYPos;
+
+    //     // var badguy = new createjs.Bitmap("images/badguy.png");
+    //     animation.x = getRand(0,300)
+    //     animation.scaleX = 0.25;
+    //     animation.scaleY = 0.25;
+    //     enemies.push(animation);
+
+    //     stage.addChild(animation);
+    //     // stage.addChild(enemy);
+         
+    // }
+    // i++;
+
+    // for(var n=0; n<enemies.length; n++){
+
+    //     bg = enemies[n];
+
+    //     if(bg.x < (enemyXPos < WIDTH && enemyXPos > 0)){
+    //         bg.x += getRand(-1,1);
+    //         enemyXPos += enemyXSpeed;
+            
+    //     } else {
+    //         bg.x += getRand(-1,0);
+    //         enemyXSpeed = enemyXSpeed * (-1);
+    //         enemyXPos += enemyXSpeed;
+    //     }
+
+
+    //     bg.y += 1;
+
+    //     if(enemyYPos < HEIGHT && enemyYPos > 0)
+    //     {
+    //         enemyYPos += enemyYSpeed;
+    //     }
+    // }
+
+    // stage.update();
+
+
+        // createjs.Ticker.addEventListener('tick', offScreen);
+
+
     // stage.update();
 	// stage.update(event);
 }
+function onFrame(elapsedTime) {
+
+    var angle = Math.atan2(mouseYPosition - checkmark.y, mouseXPosition - checkmark.x );
+
+    angle = angle * (180/Math.PI);
 
 
-// function handleMouseMove(event)
-// {
-//     //Offset the position by 45 pixels so mouse is in center of crosshair
-//     crossHair.x = event.clientX-200;
-//     crossHair.y = event.clientY-0;
-// }
+    if(angle < 0)
+
+    {
+
+        angle = 360 - (-angle);
+
+    }
+
+    textOut.text = "X:" + mouseXPosition + " Y:" + mouseYPosition + " angle:" + Math.round(angle);
+
+    checkmark.rotation =90 + angle;
+
+
+
+    stage.update();
+
+}
+function handleMouseMove(event)
+{
+    //Offset the position by 45 pixels so mouse is in center of crosshair
+    crossHair.x = event.clientX-200;
+    crossHair.y = event.clientY-0;
+}
 
 
 function handleMouseDown(event)
