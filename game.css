@@ -71,3 +71,23 @@ body {
 input button {
 	display: block;
 }
+
+.game-over {
+	position: absolute;
+	top: 200px;
+	left: 500px;
+	color: #FF7F00;
+	font-family: Helvetica, sans-serif;
+	font-size: 30px;
+	cursor: default;
+	display: none;
+}
+
+/*.score {
+	position: absolute;
+	top: 5px;
+	left: 480px;
+	color: #FF7F00;
+	font-family: Helvetica, sans-serif;
+	cursor: default;
+}*/

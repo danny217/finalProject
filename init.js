@@ -13,6 +13,8 @@ var enemyXPos=100;
 var enemyYPos=50;
 var enemyXSpeed = 1.5;
 var enemyYSpeed = 1.5;
+var enemyH = 158;
+var enemyW = 134;
 var score = 0;
 var scoreText;
 var missed = 0;
@@ -97,7 +99,7 @@ function queueLoaded(event)
     stage.addChild(scoreText);
 
     //Add Score
-    slippedByText = new createjs.Text("Enemies Missed: " + missed.toString(), "36px Arial", "#FFF");
+    slippedByText = new createjs.Text("Enemies Missed: " + missed, "36px Arial", "#FFF");
     slippedByText.x = 625;
     slippedByText.y = 10;
     stage.addChild(slippedByText);
@@ -128,9 +130,9 @@ function queueLoaded(event)
 
     stage.addChild(heroAni);
 
-    // Create crosshair
-    crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
-    stage.addChild(crossHair);
+    // // Create crosshair
+    // crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
+    // stage.addChild(crossHair);
     
     // jetSprite = new createjs.Bitmap("assets/checkmark.png");
 
@@ -156,110 +158,132 @@ function queueLoaded(event)
     window.onmousedown = handleMouseDown;
 }
 
-// function heroMove(){
+function Enemy(x, y, w, h, speed, image) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.speed = speed;
+    this.image = image;
+}
+// Add Enemy function (adds a new enemy randomly)
+function addEnemy() {
+    clearInterval(enTimer);
 
-//     spriteSheet = new createjs.SpriteSheet({
-//     "images": [queue.getResult('red')],
-//     "frames": {"width": 134, "height": 158},
-//     "animations": { "walk": [0,2] },
-//     framerate: 6
-//     });
+    var randX = getRand(0, canvas.height - iEnemyH);
+    enemies.push(new Enemy(randX, 0, enemyW, enemyH, - enemyYSpeed, oEnemyImage));
 
-//     createjs.Ticker.addEventListener('tick', enemyEvent);
+    var interval = getRand(1000, 4000);
 
-//     // createjs.Ticker.addEventListener('tick', offScreen);
+    enTimer = setInterval(addEnemy, interval); // loop
+}
 
-// } 
+// Game over
+function gameOver() {
+    createjs.Sound.removeSound("background");
+    createjs.Sound.play("gameOverSound");
+    document.getElementById('game-over').style.display = "block";
+    play = false;
+};
+// Restart the game
+function restart() {
+    createjs.Sound.removeSound("gameOverSound");
+    document.getElementById('game-over').style.display = "none";
+    this.mainContext.clearRect(0, 0, this.mainCanvas.width, this.mainCanvas.height);
+    // this.backgroundAudio.play();
 
+    this.queueLoaded(event);
+};
 
-function typeEnemy(lvl)
-{
-    // this.lvl = lvl;
-    lvl = 1;
-    console.log("hmmm");
-    if(lvl = 1 ){
-    console.log("are you kiddin?");
+// }
+// function typeEnemy(lvl)
+// {
+//     // this.lvl = lvl;
+//     lvl = 1;
+//     console.log("hmmm");
+//     if(lvl = 1 ){
+//     console.log("are you kiddin?");
         
     
-        var hp = 1;
+//         var hp = 1;
 
-        console.log("are you kiddin again?");
+//         console.log("are you kiddin again?");
 
-        animation = new createjs.Sprite(enemy, "walk");
-        animation.regX = 63;
-        animation.regY = 78;
-        animation.gotoAndPlay("walk");
+//         animation = new createjs.Sprite(enemy, "walk");
+//         animation.regX = 63;
+//         animation.regY = 78;
+//         animation.gotoAndPlay("walk");
 
-        animation.x = getRand(0, context.canvas.height - 78);
-        animation.y = getRand(0, context.canvas.height - 78);
-        // enemyXPos = animation.x;
-        // enemyYPos = animation.y;
-        animation.x = enemyXPos;
-        animation.y = enemyYPos;
+//         animation.x = getRand(0, context.canvas.height - 78);
+//         animation.y = getRand(0, context.canvas.height - 78);
+//         // enemyXPos = animation.x;
+//         // enemyYPos = animation.y;
+//         animation.x = enemyXPos;
+//         animation.y = enemyYPos;
 
-        stage.addChild(animation);
-        // createjs.Ticker.addEventListener('tick', enemyEvent);
+//         stage.addChild(animation);
+//         // createjs.Ticker.addEventListener('tick', enemyEvent);
 
-        // stage.update(event);
-        // createjs.EventDispatcher.initialize(typeEnemy); // add to a specific instance
-        // function enemyEvent(){
-        // //Make sure enemy is within game boundaries and move enemy 
-        //     if(enemyXPos < WIDTH && enemyXPos > 0)
-        //     {
-        //         enemyXPos += enemyXSpeed;
-        //     } else 
-        //     {
-        //         enemyXSpeed = enemyXSpeed * (-1);
-        //         enemyXPos += enemyXSpeed;
-        //     }
-        //     if(enemyYPos < HEIGHT && enemyYPos > 0)
-        //     {
-        //         enemyYPos += enemyYSpeed;
-        //     }
+//         // stage.update(event);
+//         // createjs.EventDispatcher.initialize(typeEnemy); // add to a specific instance
+//         // function enemyEvent(){
+//         // //Make sure enemy is within game boundaries and move enemy 
+//         //     if(enemyXPos < WIDTH && enemyXPos > 0)
+//         //     {
+//         //         enemyXPos += enemyXSpeed;
+//         //     } else 
+//         //     {
+//         //         enemyXSpeed = enemyXSpeed * (-1);
+//         //         enemyXPos += enemyXSpeed;
+//         //     }
+//         //     if(enemyYPos < HEIGHT && enemyYPos > 0)
+//         //     {
+//         //         enemyYPos += enemyYSpeed;
+//         //     }
 
-        //     createjs.Ticker.addEventListener('tick', offScreen);
-        //     } 
+//         //     createjs.Ticker.addEventListener('tick', offScreen);
+//         //     } 
 
-        }
+//         }
     
-    // this.dispatchEvent(enemyEvent);
-    // if(lvl = 2 ){
+//     // this.dispatchEvent(enemyEvent);
+//     // if(lvl = 2 ){
 
-    //     function enemyBlue(){
-    //         var hp = 3;
-    //         var enemy = 1;
+//     //     function enemyBlue(){
+//     //         var hp = 3;
+//     //         var enemy = 1;
 
-    //         if(enemyYPos > HEIGHT && enemyYPos < 0 ){
-    //             missed += enemy;
-    //             slippedByText.text = "Enemies Missed: " + missed.toString();
-    //             delete enemyBlue();
-    //         }
-    //     }
-    // }
-    // animation = new createjs.Sprite(spriteSheet, "walk");
-    // animation.regX = 63;
-    // animation.regY = 78;
-    // animation.x = enemyXPos;
-    // animation.y = enemyYPos;
-    // animation.gotoAndPlay("walk");
-    // stage.addChildAt(animation, 3);
-}
+//     //         if(enemyYPos > HEIGHT && enemyYPos < 0 ){
+//     //             missed += enemy;
+//     //             slippedByText.text = "Enemies Missed: " + missed.toString();
+//     //             delete enemyBlue();
+//     //         }
+//     //     }
+//     // }
+//     // animation = new createjs.Sprite(spriteSheet, "walk");
+//     // animation.regX = 63;
+//     // animation.regY = 78;
+//     // animation.x = enemyXPos;
+//     // animation.y = enemyYPos;
+//     // animation.gotoAndPlay("walk");
+//     // stage.addChildAt(animation, 3);
+// }
 
-function createEnemy()
-{
-    typeEnemy();
-}
+// function createEnemy()
+// {
+//     typeEnemy();
+// }
 
-function batDeath()
-{
-  deathAnimation = new createjs.Sprite(batDeathSpriteSheet, "die");
-  deathAnimation.regX = 99;
-  deathAnimation.regY = 58;
-  deathAnimation.x = enemyXPos;
-  deathAnimation.y = enemyYPos;
-  deathAnimation.gotoAndPlay("die");
-  stage.addChild(deathAnimation);
-}
+// function batDeath()
+// {
+//   deathAnimation = new createjs.Sprite(batDeathSpriteSheet, "die");
+//   deathAnimation.regX = 99;
+//   deathAnimation.regY = 58;
+//   deathAnimation.x = enemyXPos;
+//   deathAnimation.y = enemyYPos;
+//   deathAnimation.gotoAndPlay("die");
+//   stage.addChild(deathAnimation);
+// }
 
 
 // Ticker.setPaused(true);
@@ -273,78 +297,14 @@ function tickEvent(event)
     createjs.Ticker.setFPS(30);
 
     enemyEvent();
-
-    // if(i % 50 == 0){
-        
-    //     enemy = new createjs.SpriteSheet({
-    //     "images": [queue.getResult('red')],
-    //     "frames": {"width": 134, "height": 158},
-    //     "animations": { "walk": [0,2] },
-    //     framerate: 3
-    //     });
-
-    //     animation = new createjs.Sprite(enemy, "walk");
-    //     animation.regX = 63;
-    //     animation.regY = 78;
-    //     animation.gotoAndPlay("walk");
-
-    //     animation.x = getRand(0, context.canvas.height - 78);
-    //     animation.y = getRand(0, context.canvas.height - 78);
-    //     // enemyXPos = animation.x;
-    //     // enemyYPos = animation.y;
-    //     animation.x = enemyXPos;
-    //     animation.y = enemyYPos;
-
-    //     // var badguy = new createjs.Bitmap("images/badguy.png");
-    //     animation.x = getRand(0,300)
-    //     animation.scaleX = 0.25;
-    //     animation.scaleY = 0.25;
-    //     enemies.push(animation);
-
-    //     stage.addChild(animation);
-    //     // stage.addChild(enemy);
-         
-    // }
-    // i++;
-
-    // for(var n=0; n<enemies.length; n++){
-
-    //     bg = enemies[n];
-
-    //     if(bg.x < (enemyXPos < WIDTH && enemyXPos > 0)){
-    //         bg.x += getRand(-1,1);
-    //         enemyXPos += enemyXSpeed;
-            
-    //     } else {
-    //         bg.x += getRand(-1,0);
-    //         enemyXSpeed = enemyXSpeed * (-1);
-    //         enemyXPos += enemyXSpeed;
-    //     }
-
-
-    //     bg.y += 1;
-
-    //     if(enemyYPos < HEIGHT && enemyYPos > 0)
-    //     {
-    //         enemyYPos += enemyYSpeed;
-    //     }
-    // }
-
-    // stage.update();
-
-
-        // createjs.Ticker.addEventListener('tick', offScreen);
-
-
-    // stage.update();
-    // stage.update(event);
+   
 }
 
 function handleMouseMove(event)
 {
-    //Offset the position by 45 pixels so mouse is in center of crosshair
-    crossHair.x = event.clientX-53;
-    crossHair.y = event.clientY-55;
+    // //Offset the position by 45 pixels so mouse is in center of crosshair
+    // crossHair.x = event.clientX-75;
+    // crossHair.y = event.clientY-63;
 
     var angle = Math.atan2(stage.mouseY - heroAni.y, stage.mouseX - heroAni.x );
 
@@ -366,16 +326,23 @@ function handleMouseMove(event)
     // stage.update();
 }
 
+function handleClick(){
+    document.getElementById('game-over').style.display = "none";
+    enemies = [];
+    missed = 0;
+    score = 0;
+    onload();
+}
 
 function handleMouseDown(event)
 {
 
-    // //Display CrossHair
-    // crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
-    // crossHair.x = event.clientX-218;
-    // crossHair.y = event.clientY-52;
-    // stage.addChild(crossHair);
-    // createjs.Tween.get(crossHair).to({alpha: 0},1000);
+    //Display CrossHair
+    crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
+    crossHair.x = event.clientX-75;
+    crossHair.y = event.clientY-63;
+    stage.addChild(crossHair);
+    createjs.Tween.get(crossHair).to({alpha: 0},1000);
     
     //Play Gunshot sound
     createjs.Sound.play("shot");
@@ -387,28 +354,37 @@ function handleMouseDown(event)
     //Obtain Shot position
     var shotX = Math.round(event.clientX);
     var shotY = Math.round(event.clientY);
-    var spriteX = Math.round(animation.x);
-    var spriteY = Math.round(animation.y);
+   
 
-    // Compute the X and Y distance using absolute value
-    var distX = Math.abs(shotX - spriteX);
-    var distY = Math.abs(shotY - spriteY);
-
+    var remove = [];
     if (enemies.length > 0) {
-        for (var ekey in enemies) {
-           if (enemies[ekey] != undefined) {
+        for(var i=0;i<enemies.length;i++){
+            enemy = enemies[i];
+           if (enemy != undefined) {
 
-                animation = enemies[ekey];
+                animation = enemy;
+
+                var spriteX = Math.round(animation.x);
+                var spriteY = Math.round(animation.y);
+
+                // Compute the X and Y distance using absolute value
+                var distX = Math.floor(shotX - spriteX);
+                var distY = Math.floor(shotY - spriteY);
                 
-                var remove = [];
-
+                console.log(distX);
                 // Anywhere in the body or head is a hit 
-                if(distX < 30 && distY < 59)
+                if(distX >= 0 && distX <= 70 && distY >= -59 && distY <= 59)
                 {
+                    console.log("shot " + animation.name);
+                    
                     //Hit
-                    // remove.push(animation);
-                    stage.removeChild(animation);
-                    delete enemies[ekey];
+                    remove.push(animation); 
+                    // stage.removeChild(animation);
+
+                    // var value_to_remove = enemies[ekey];
+                    // enemies.splice(enemies.indexOf(value_to_remove), 1);
+
+
                     // batDeath();
                     score += 100;
                     scoreText.text = "1UP: " + score.toString();
@@ -428,16 +404,41 @@ function handleMouseDown(event)
                     score -= 10;
                     scoreText.text = "1UP: " + score.toString();
 
+
+                    // console.log("missed " + animation.name);
                 }
             }
         }
+        // console.log(enemies.length);
+        for(var i=0;i<remove.length;i++){
+                       
+            removeEnemy(remove[i].name);
+        }
+        // console.log(enemies.length);
+        remove = [];
     }
 
 }
 
+function removeEnemy(enemyName){
+    // Find index of this enemyName...
+    var idx=-1;
+    for(var i=0; i<enemies.length;i++){
+        if(enemies[i].name == enemyName){
+            idx = i;
+        }
+    }
+    // use splice to remove
+    if(idx>=0){
+        // console.log("Removed " + enemyName);
+        stage.removeChild(enemies[idx]);
+        enemies.splice(idx, 1);
+    }
+}
+
+var en = 1;
 function enemyEvent()
-{   
-      
+{      
     if(i % 50 == 0){
         
         enemy = new createjs.SpriteSheet({
@@ -448,11 +449,14 @@ function enemyEvent()
             });
 
         animation = new createjs.Sprite(enemy, "walk");
+        animation.wait = getRand(10,20);
+        animation.vector = {x: getRand(-10,10), y: getRand(0,2)};
         animation.regX = 63;
         animation.regY = 78;
         animation.gotoAndPlay("walk");
 
         animation.x = getRand(-1, 960);
+        animation.name = "charlie " + en++;
         // animation.y = getRand(960, -1);
         // enemyXPos = animation.x;
         // enemyYPos = animation.y;
@@ -464,17 +468,42 @@ function enemyEvent()
         // animation.scaleX = 0.25;
         // animation.scaleY = 0.25;
         enemies.push(animation);
-        console.log(enemies);
+        // console.log(enemies);
         stage.addChild(animation);
         // stage.addChild(enemy);
          
     }
     i++;
-    if (enemies.length > 0) {
-        for (var ekey in enemies) {
-           if (enemies[ekey] != undefined) {
+    enemyPass();
+}
 
-                animation = enemies[ekey];
+function enemyPass(){
+    if (enemies.length > 0) {
+        var remove = [];
+
+        for(var i=0;i<enemies.length;i++) 
+        {
+            enemy = enemies[i];
+
+            if(enemy.wait && enemy.wait > 0)
+            {
+            enemy.x += enemy.vector.x;    
+
+            enemy.wait--;
+            } else 
+            {
+            // Get new vector
+            enemy.wait = getRand(5,10);
+            enemy.vector = {x: getRand(0,10), y: getRand(0,2)};
+            
+            }
+        
+        enemy.y += enemy.vector.y;
+        
+            if (enemy != undefined) 
+            {
+
+                animation = enemy;
 
                 if(animation.x < WIDTH && animation.x > 0)
                 {
@@ -487,34 +516,59 @@ function enemyEvent()
 
                 animation.y += 5;
 
-                var remove = [];
-
-                if(animation.y > HEIGHT && animation.y > 0 )  
+               
+                if(animation.y > (HEIGHT + 70) && animation.y > 0 )  
                 {
                     // createjs.Ticker.reset('tick');
                     missed += 1;
-                    slippedByText.text = "Enemies Missed: " + missed.toString();
+                    slippedByText.text = "Enemies Missed: " + missed;
                     // animation.x = enemyXPos;
                     // animation.y = enemyYPos;
-                    // remove.push(animation);
-                    delete enemies[ekey];
+                    remove.push(animation);
+
+                    if(missed >= 5 && missed < 6){
+                        gameOver();
+                        animation.gotoAndStop("walk");
+                        createjs.Ticker.reset('tick');
+                        stage.removeChild(animation);
+                         // stage.update();
+                        // restart();
+                    }
+
+                    // //delete enemies[ekey];
+                    // if(missed = 5){
+                    //     createjs.Ticker.setPaused(true);
+                    // }
                     //Remove the sprite
-                    stage.removeChild(animation);
+                   // stage.removeChild(animation);
                     // createjs.Ticker.addEventListener('tick', stage);
                     // createjs.Ticker.addEventListener('tick', tickEvent);
                     // createjs.Ticker.addEventListener('tick', enemyEvent);
                     
-                    stage.update();
+                   // stage.update();
                     // createjs.Ticker.addEventListener('tick', enemyEvent);
                     // createjs.Ticker.addEventListener('tick', createEnemy);
-                }
-                
+                }  
             }
         }
+       
+        for(var i=0;i<remove.length;i++){
+                       
+            removeEnemy(remove[i].name);
+        }
+        
+        remove = [];
     }
-
-
 }
+
+// function removeRedo(){
+//     for(var i=0;i<remove.length;i++){
+                       
+//         removeEnemy(remove[i].name);
+//     }
+    
+//     remove = [];
+// }
 // function updateTime()
 // {
 //     gameTime += 1;
