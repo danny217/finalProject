@@ -75,9 +75,9 @@ input button {
 .game-over {
 	position: absolute;
 	top: 200px;
-	left: 500px;
+	left: 400px;
 	color: #000;
-	font-family: Helvetica, sans-serif;
+	font-family: 'Luckiest Guy', cursive;
 	font-size: 30px;
 	cursor: default;
 	display: none;

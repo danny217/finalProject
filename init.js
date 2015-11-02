@@ -23,6 +23,7 @@ var allowed = 5;
 var lvl = 1;
 var timerSource; //references a setInterval method
 var enemies = [];
+var enemiesS = [];
 var enTimer = null; // random timer for a new enemy
 var enemyCount = 0;
 var i = 0;
@@ -38,7 +39,8 @@ function getRand(x, y)
 
 document.addEventListener("DOMContentLoaded", ready);
 
-function ready(event){
+function ready(event)
+{
 
     /*
      *      Set up the Canvas with Size and height
@@ -85,48 +87,6 @@ function ready(event){
 
 }
 
-var en = 1;
-function enemyEvent()
-{      
-    if(i % 50 == 0){
-        
-        enemy = new createjs.SpriteSheet({
-            "images": [queue.getResult('red')],
-            "frames": {"width": 134, "height": 158},
-            "animations": { "walk": [0,2] },
-            framerate: 6
-            });
-
-        animation = new createjs.Sprite(enemy, "walk");
-        animation.wait = getRand(10,20);
-        animation.vector = {x: getRand(-10,10), y: getRand(0,2)};
-        animation.regX = 63;
-        animation.regY = 78;
-        animation.gotoAndPlay("walk");
-
-        animation.x = getRand(-1, 960);
-        animation.name = "charlie " + en++;
-        // animation.y = getRand(960, -1);
-        // enemyXPos = animation.x;
-        // enemyYPos = animation.y;
-        // animation.x = enemyXPos;
-        // animation.y = enemyYPos;
-
-        // var badguy = new createjs.Bitmap("images/badguy.png");
-        // animation.x = getRand(-1,960)
-        // animation.scaleX = 0.25;
-        // animation.scaleY = 0.25;
-        enemies.push(animation);
-        // console.log(enemies);
-        stage.addChild(animation);
-
-        // stage.addChild(enemy);
-         
-    }
-    i++;
-    enemyPass();
-
-}
 
 function queueLoaded(event)
 {
@@ -171,14 +131,16 @@ function queueLoaded(event)
     // heroAni.y = getRand(0, WIDTH);
     // enemyXPos = heroAni.x;
     // enemyYPos = heroAni.y;
-    heroAni.x = heroXPos;
-    heroAni.y = heroYPos;
+    // heroAni.x = heroXPos;
+    heroAni.y = 500;
 
     stage.addChild(heroAni);
+
+
     createjs.Ticker.addEventListener('tick', stage);
     createjs.Ticker.addEventListener('tick', tickEvent);
 
-        // Create crosshair
+    // Create crosshair
     crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
     stage.addChild(crossHair);
     
@@ -207,7 +169,17 @@ function queueLoaded(event)
     
 }
     
-function Enemy(x, y, w, h, speed, image) {
+function Enemy(x, y, w, h, speed, image) 
+{
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.speed = speed;
+    this.image = image;
+}
+function EnemyS(x, y, w, h, speed, image) 
+{
     this.x = x;
     this.y = y;
     this.w = w;
@@ -216,11 +188,13 @@ function Enemy(x, y, w, h, speed, image) {
     this.image = image;
 }
 // Add Enemy function (adds a new enemy randomly)
-function addEnemy() {
+function addEnemy() 
+{
     clearInterval(enTimer);
 
     var randX = getRand(0, canvas.height - iEnemyH);
     enemies.push(new Enemy(randX, 0, enemyW, enemyH, - enemyYSpeed, oEnemyImage));
+    enemiesS.push(new EnemyS(randX, 0, enemyW, enemyH, - enemyYSpeed, oEnemyImage));
 
     var interval = getRand(1000, 4000);
 
@@ -228,12 +202,13 @@ function addEnemy() {
 }
 
 // Game over
-function gameOver() {
+function gameOver() 
+{
     createjs.Sound.removeSound("background");
     createjs.Sound.play("gameOverSound");
     document.getElementById('game-over').style.display = "block";
     play = false;
-};
+}
 
 
 // // Restart the game
@@ -353,10 +328,9 @@ function tickEvent(event)
 function handleMouseMove(event)
 {
 
-    //Offset the position by 45 pixels so mouse is in center of crosshair
-    crossHair.x = event.clientX-55;
-    crossHair.y = event.clientY-50;
-
+    // //Offset the position by 45 pixels so mouse is in center of crosshair
+    // crossHair.x = event.clientX-55;
+    // crossHair.y = event.clientY-50;
 
     var angle = Math.atan2(stage.mouseY - heroAni.y, stage.mouseX - heroAni.x );
 
@@ -378,13 +352,14 @@ function handleMouseMove(event)
     // stage.update();
 }
 
-function crosshair(event){
-    // Create crosshair
-    crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
-    stage.addChild(crossHair);
-}
+// function crosshair(event){
+//     // Create crosshair
+//     crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
+//     stage.addChild(crossHair);
+// }
 
-function handleClick(){
+function handleClick()
+{
     document.getElementById('game-over').style.display = "none";
     //stage.enableDOMEvents(false);
     //stage.enableDOMEvents(true);
@@ -444,90 +419,311 @@ function handleMouseDown(event)
    
 
     var remove = [];
-    if (enemies.length > 0) {
-        for(var i=0;i<enemies.length;i++){
+    if (enemies.length > 0) 
+    {
+        for(var i=0;i<enemies.length;i++)
+        {
             enemy = enemies[i];
-           if (enemy != undefined) {
+            if (enemy != undefined) 
+            {
+                // enemies.forEach(function(enemy) {
+                    if(collisionEnemy(shotX, shotY, 10))
+                    {
+                        console.log("shot " + animation.name);
+                        //Hit
+                        remove.push(enemy); 
+                        // //Hit
+                        // stage.removeChild(enemies[i]);
+                        // enemies.splice(i, 1); 
+                        score += 100;
+                        scoreText.text = "1UP: " + score.toString();
+                    } 
+                // });
 
-                animation = enemy;
-
-                var spriteX = Math.round(animation.x);
-                var spriteY = Math.round(animation.y);
-
-                // Compute the X and Y distance using absolute value
-                var distX = Math.floor(shotX - spriteX);
-                var distY = Math.floor(shotY - spriteY);
-                
-                console.log(distX);
-                // Anywhere in the body or head is a hit 
-                if(distX >= 0 && distX <= 70 && distY >= -59 && distY <= 59)
+                if(collisionEnemy(heroAni.x, heroAni.y, 75))
                 {
-                    console.log("shot " + animation.name);
+                    console.log("collided with " + animation.name);
                     
-                    //Hit
-                    remove.push(animation); 
-                    // stage.removeChild(animation);
-
-                    // var value_to_remove = enemies[ekey];
-                    // enemies.splice(enemies.indexOf(value_to_remove), 1);
-
-
-                    // batDeath();
-                    score += 100;
-                    scoreText.text = "1UP: " + score.toString();
-                    // createjs.Sound.play("deathSound");
-                    
-                 //    //Make it harder next time
-                    // enemyYSpeed *= 1.25;
-                    // enemyXSpeed *= 1.3;
-                    // stage.update();
-                    // //Create new enemy
-                    // var timeToCreate = Math.floor((Math.random()*3500)+1);
-                    // setTimeout(createEnemy,timeToCreate);
-
-                } else
-                {
-                    //Miss
-                    score -= 10;
-                    scoreText.text = "1UP: " + score.toString();
-
-
-                    // console.log("missed " + animation.name);
+                    animation.x = animation.x * (-1);
                 }
             }
         }
-        // console.log(enemies.length);
-        for(var i=0;i<remove.length;i++){
-                       
-            removeEnemy(remove[i].name);
-        }
-        // console.log(enemies.length);
-        remove = [];
-
-
     }
+    var removeS = [];
+    if (enemiesS.length > 0) 
+    {
+        for(var i=0;i<enemiesS.length;i++)
+        {
+            enemyS = enemiesS[i];
+            if (enemyS != undefined) 
+            {
+                // enemies.forEach(function(enemy) {
+                    if(collisionEnemyS(shotX, shotY, 10))
+                    {
+                        console.log("shot " + animationS.name);
+                        //Hit
+                        removeS.push(enemyS); 
+                        // //Hit
+                        // stage.removeChild(enemies[i]);
+                        // enemies.splice(i, 1); 
+                        score += 100;
+                        scoreText.text = "1UP: " + score.toString();
+                    } 
+                // });
+
+                if(collisionEnemyS(heroAni.x, heroAni.y, 75))
+                {
+                    console.log("collided with " + animationS.name);
+                    
+                    animationS.x = animationS.x * (-1);
+                }
+                 
+                
+
+                // animation = enemy;
+
+                // var spriteX = Math.round(animation.x);
+                // var spriteY = Math.round(animation.y);
+
+                // // Compute the X and Y distance using absolute value
+                // var distX = Math.floor(shotX - spriteX);
+                // var distY = Math.floor(shotY - spriteY);
+                
+                // console.log(distX);
+                // // Anywhere in the body or head is a hit 
+                // if(distX >= 0 && distX <= 70 && distY >= -59 && distY <= 59)
+                // {
+                //     console.log("shot " + animation.name);
+                    
+                //     //Hit
+                //     remove.push(animation); 
+                //     // stage.removeChild(animation);
+
+                //     // var value_to_remove = enemies[ekey];
+                //     // enemies.splice(enemies.indexOf(value_to_remove), 1);
+
+
+                //     // batDeath();
+                //     // score += 100;
+                //     // scoreText.text = "1UP: " + score.toString();
+                //     // createjs.Sound.play("deathSound");
+                    
+                //  //    //Make it harder next time
+                //     // enemyYSpeed *= 1.25;
+                //     // enemyXSpeed *= 1.3;
+                //     // stage.update();
+                //     // //Create new enemy
+                //     // var timeToCreate = Math.floor((Math.random()*3500)+1);
+                //     // setTimeout(createEnemy,timeToCreate);
+
+                // } else
+                // {
+
+                //         //Miss
+                //         score -= 10;
+                //         scoreText.text = "1UP: " + score.toString();
+
+                //     // console.log("missed " + animation.name);
+                // }
+            }
+        }
+    }
+    // console.log(enemies.length);
+    for(var i=0;i<remove.length;i++)
+    {
+        removeEnemy(remove[i].name);
+    }
+    
+    // console.log(enemies.length);
+    remove = [];
+
+    // console.log(enemies.length);
+    for(var i=0;i<removeS.length;i++)
+    {
+        removeEnemyS(removeS[i].name);
+    }
+    
+    // console.log(enemies.length);
+    removeS = [];
+}
+
+var en = 1;
+function enemyEvent()
+{     
+    if(i % 30 == 0){
+
+        enemyS = new createjs.SpriteSheet({
+            "images": [queue.getResult('red')],
+            "frames": {"width": 134, "height": 158},
+            "animations": { "walk2": [0,2] },
+            framerate: 6
+            });
+
+        animationS = new createjs.Sprite(enemyS, "walk2");
+        // animationS.wait = getRand(10,20);
+        // animationS.vector = {x: getRand(-10,10), y: getRand(0,2)};
+        animationS.regX = 63;
+        animationS.regY = 78;
+        animationS.gotoAndPlay("walk2");
+
+        animationS.x = getRand(-1, 960);
+        animationS.name = "Frank " + en++;
+        
+        // enemy = new createjs.SpriteSheet({
+        //     "images": [queue.getResult('red')],
+        //     "frames": {"width": 134, "height": 158},
+        //     "animations": { "walk": [0,2] },
+        //     framerate: 6
+        //     });
+
+        // animation = new createjs.Sprite(enemy, "walk");
+        // animation.wait = getRand(10,20);
+        // animation.vector = {x: getRand(-10,10), y: getRand(0,2)};
+        // animation.regX = 63;
+        // animation.regY = 78;
+        // animation.gotoAndPlay("walk");
+
+        // animation.x = getRand(-1, 960);
+        // animation.name = "charlie " + en++;
+        // animation.y = getRand(960, -1);
+        // enemyXPos = animation.x;
+        // enemyYPos = animation.y;
+        // animation.x = enemyXPos;
+        // animation.y = enemyYPos;
+
+        // var badguy = new createjs.Bitmap("images/badguy.png");
+        // animation.x = getRand(-1,960)
+        // animation.scaleX = 0.25;
+        // animation.scaleY = 0.25;
+        
+        enemiesS.push(animationS);
+        // console.log(enemies);
+
+        stage.addChild(animationS);
+
+        // stage.addChild(enemy);
+         
+    }
+
+    if(i % 50 == 0){
+        
+        enemy = new createjs.SpriteSheet({
+            "images": [queue.getResult('red')],
+            "frames": {"width": 134, "height": 158},
+            "animations": { "walk": [0,2] },
+            framerate: 6
+            });
+
+        animation = new createjs.Sprite(enemy, "walk");
+        animation.wait = getRand(10,20);
+        animation.vector = {x: getRand(-10,10), y: getRand(0,2)};
+        animation.regX = 63;
+        animation.regY = 78;
+        animation.gotoAndPlay("walk");
+
+        animation.x = getRand(-1, 960);
+        animation.name = "charlie " + en++;
+        // animation.y = getRand(960, -1);
+        // enemyXPos = animation.x;
+        // enemyYPos = animation.y;
+        // animation.x = enemyXPos;
+        // animation.y = enemyYPos;
+
+        // var badguy = new createjs.Bitmap("images/badguy.png");
+        // animation.x = getRand(-1,960)
+        // animation.scaleX = 0.25;
+        // animation.scaleY = 0.25;
+        enemies.push(animation);
+
+        // console.log(enemies);
+        stage.addChild(animation);
+
+
+        // stage.addChild(enemy);
+         
+    }
+    i++;
+    enemyPass();
 
 }
 
-function removeEnemy(enemyName){
+function collisionEnemy(posX, posY, Radius)
+{
+    var distX = posX - enemy.x;
+    var distY = posY - enemy.y;
+    var distR = Radius + 75;
+    if(distX*distX + distY*distY <= distR*distR)
+    {
+        console.log("hit");
+        return true;
+    }
+}
+
+function collisionEnemyS(posX, posY, Radius)
+{
+    var distX = posX - enemyS.x;
+    var distY = posY - enemyS.y;
+    var distR = Radius + 75;
+    if(distX*distX + distY*distY <= distR*distR)
+    {
+        console.log("hit");
+        return true;
+    }
+}
+
+// function missedEnemy(posX, posY, Radius){
+//     var distX = posX - (enemy.x+10);
+//     var distY = posY - (enemy.y+10);
+//     var distR = Radius + 75;
+//     if(distX*distX + distY*distY <= distR*distR){
+//         console.log("missed");
+//         return true;
+//     }
+// }
+
+function removeEnemy(enemyName)
+{
     // Find index of this enemyName...
     var idx=-1;
-    for(var i=0; i<enemies.length;i++){
-        if(enemies[i].name == enemyName){
+    for(var i=0; i<enemies.length;i++)
+    {
+        if(enemies[i].name == enemyName)
+        {
             idx = i;
         }
     }
     // use splice to remove
-    if(idx>=0){
+    if(idx>=0)
+    {
         // console.log("Removed " + enemyName);
         stage.removeChild(enemies[idx]);
         enemies.splice(idx, 1);
     }
 }
+function removeEnemyS(enemyName)
+{
+    // Find index of this enemyName...
+    var idx=-1;
+    for(var i=0; i<enemiesS.length;i++)
+    {
+        if(enemiesS[i].name == enemyName)
+        {
+            idx = i;
+        }
+    }
+    // use splice to remove
+    if(idx>=0)
+    {
+        // console.log("Removed " + enemyName);
+        stage.removeChild(enemiesS[idx]);
+        enemiesS.splice(idx, 1);
+    }
+}
 
-
-function enemyPass(){
-    if (enemies.length > 0) {
+function enemyPass()
+{
+    if (enemies.length > 0) 
+    {
         var remove = [];
 
         for(var i=0;i<enemies.length;i++) 
@@ -574,12 +770,9 @@ function enemyPass(){
                     // animation.x = enemyXPos;
                     // animation.y = enemyYPos;
                     remove.push(animation);
+                    // stage.removeChild(enemies[i]);
+                    //     enemies.splice(i, 1);
 
-                    if(missed >= 5 && missed < 6){
-                        gameOver();
-                        createjs.Ticker.reset('tick');
-                        // restart();
-                    }
 
                     // //delete enemies[ekey];
                     // if(missed = 5){
@@ -597,14 +790,101 @@ function enemyPass(){
                 }  
             }
         }
-       
-        for(var i=0;i<remove.length;i++){
-                       
-            removeEnemy(remove[i].name);
-        }
-        
-        remove = [];
     }
+    if (enemiesS.length > 0) 
+    {
+        var removeS = [];
+        for(var i=0;i<enemiesS.length;i++) 
+        {
+            enemyS = enemiesS[i];
+
+        //     if(enemy.wait && enemy.wait > 0)
+        //     {
+        //     enemy.x += enemy.vector.x;    
+
+        //     enemy.wait--;
+        //     } else 
+        //     {
+        //     // Get new vector
+        //     enemy.wait = getRand(5,10);
+        //     enemy.vector = {x: getRand(0,10), y: getRand(0,2)};
+            
+        //     }
+        
+        // enemy.y += enemy.vector.y;
+        
+            if (enemyS != undefined) 
+            {
+
+                animationS = enemyS;
+
+                if(animationS.x < WIDTH && animationS.x > 0)
+                {
+                    animationS.x;
+                } else 
+                {
+                    animationS.x = animationS.x * (-1);
+                    // animation.x = getRand(50, 150);
+                }
+
+                animationS.y += 5;
+
+               
+                if(animationS.y > (HEIGHT + 70) && animationS.y > 0 )  
+                {
+                    // createjs.Ticker.reset('tick');
+                    missed += 1;
+                    slippedByText.text = "Enemies Missed: " + missed;
+                    // animation.x = enemyXPos;
+                    // animation.y = enemyYPos;
+                    remove.push(animationS);
+                    // stage.removeChild(enemies[i]);
+                    //     enemies.splice(i, 1);
+
+                    // if(missed >= 5 && missed < 6)
+                    // {
+                    //     gameOver();
+                    //     createjs.Ticker.reset('tick');
+                    //     // restart();
+                    // }
+
+                    // //delete enemies[ekey];
+                    // if(missed = 5){
+                    //     createjs.Ticker.setPaused(true);
+                    // }
+                    //Remove the sprite
+                   // stage.removeChild(animation);
+                    // createjs.Ticker.addEventListener('tick', stage);
+                    // createjs.Ticker.addEventListener('tick', tickEvent);
+                    // createjs.Ticker.addEventListener('tick', enemyEvent);
+                    
+                   // stage.update();
+                    // createjs.Ticker.addEventListener('tick', enemyEvent);
+                    // createjs.Ticker.addEventListener('tick', createEnemy);
+                }  
+            }
+        }
+    }
+    if(missed >= 5 && missed < 6)
+    {
+        gameOver();
+        createjs.Ticker.reset('tick');
+        // restart();
+    }
+
+    for(var i=0;i<remove.length;i++)
+    {           
+        removeEnemy(remove[i].name);
+    }
+    
+    remove = [];
+
+    for(var i=0;i<removeS.length;i++)
+    {           
+        removeEnemyS(removeS[i].name);
+    }
+    
+    removeS = [];
 }
 
 // function removeRedo(){
