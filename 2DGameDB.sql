@@ -2,7 +2,7 @@ drop database if exists 2DGameDB;
 create database 2DGameDB;
 use 2DGameDB;
 
-create table Players(
+create table Users(
 	id int auto_increment primary key,
 	username varchar(255) not null unique,
 	password varchar(50) not null,

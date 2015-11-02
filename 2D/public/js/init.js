@@ -67,15 +67,15 @@ function ready(event)
      *
      */
     queue.loadManifest([
-        {id: 'backgroundImage', src: 'assets/background.jpg'},
-        {id: 'crossHair', src: 'assets/crosshair.png'},
-        {id: 'shot', src: 'assets/Bow_Fire_Arrow.mp3'},
-        {id: 'background', src: 'assets/countryside.mp3'},
-        {id: 'gameOverSound', src: 'assets/gameOver.mp3'},
-        {id: 'deathSound', src: 'assets/die.mp3'},
-        {id: 'red', src: 'assets/red_enemy.png'},
-        {id: 'hero', src: 'assets/hero.png'},
-        {id: 'checkmark', src: 'assets/checkmark.png'},
+        {id: 'backgroundImage', src: '../assets/background.jpg'},
+        {id: 'crossHair', src: '../assets/crosshair.png'},
+        {id: 'shot', src: '../assets/Bow_Fire_Arrow.mp3'},
+        {id: 'background', src: '../assets/countryside.mp3'},
+        {id: 'gameOverSound', src: '../assets/gameOver.mp3'},
+        {id: 'deathSound', src: '../assets/die.mp3'},
+        {id: 'red', src: '../assets/red_enemy.png'},
+        {id: 'hero', src: '../assets/hero.png'},
+        {id: 'checkmark', src: '../assets/checkmark.png'},
     ]);
     queue.load();
 
