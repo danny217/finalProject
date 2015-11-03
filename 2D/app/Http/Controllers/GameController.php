@@ -19,19 +19,21 @@ class GameController extends Controller {
 	}
 
 	public function create($id){
-		$user = new User;
-		$user->customer_id = $id;
-		$user->save();
 
-		return redirect("/invoice/" . $user->getId());
+		User::saveScore($id, Request::input('score'));
+		// $user = new User;
+		// $user->id = $id;
+		// $user->save();
+
+		// return redirect("/invoice/" . $user->getId());
 	}
 
-	public function postCreate($invoiceId){
+	public function postCreate($id){ //this is where I was
 
 
-		Invoice::addItem($invoiceId, Request::input('item'), Request::input('quantity'));
+		User::saveScore($id, Request::input('score'));
 
-		return redirect("/invoice/" . $invoiceId);
+		// return redirect("/invoice/" . $id);
 
 	}
 

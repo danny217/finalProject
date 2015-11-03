@@ -66,4 +66,21 @@ class User{
     public function getId() {
         return $this->id;
     }
+
+    public static function addItem($id, $levelId, $score){
+
+        $sql = 'insert into Saves(playerId, currentLevelId, score) values (:id, :levelId, :score)';
+
+        $rows = DB::insert($sql, [":id"=>$id, ":levelId"=>$levelId, ":score"=>$score]);
+        
+        return $rows;
+    }
+
+    public static function saveScore($id, $score){
+        $sql = 'insert into Saves(playerId, score) values (:id, :score)';
+
+        $rows = DB::insert($sql, [":id"=>$id, ":score"=>$score]);
+        
+        return $rows;
+    }
 }
