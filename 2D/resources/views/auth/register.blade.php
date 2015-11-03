@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Login</title>
+        <title>Register</title>
         
         <link href="<?php echo asset('css/normalize.css')?>" type="text/css" rel="stylesheet" />
         <link href="<?php echo asset('css/game.css')?>" type="text/css" rel="stylesheet" />
@@ -9,20 +9,24 @@
         <script language="javascript" type="text/javascript" src="<?php echo asset('js/init.js')?>" ></script>
     </head>
     <body>
+
     	<div class="background">
 	        <div class="container">
 		        <div class="shield">
 		        	<img id="shield" src="<?php echo asset('assets/wooden_shield_thing.png')?>">
-		        	<div class="login_container">
-				        <label class="login"><div class="login_label">Login</div>
-				        	{{-- <div class="login"> --}}
-					       	<form method="POST" action="/auth/login">
+		        	<div class="login_container register_container">
+		        		<label class="register">Register
+				        	<form class="register_form" method="POST" action="/auth/register">
 						    {!! csrf_field() !!}
-						        
-						    <div class="email">
+
+						    <div>
+						        Username
+						        <input type="text" name="username" value="{{ old('username') }}">
+						    </div>
+
+						    <div>
 						        Email
-						        <input class="login" type="email" name="email" value="{{ old('email') }}">
-						        <div class="errors">
+						        <input type="email" name="email" value="{{ old('email') }}">
 						        @if( count($errors) > 0 )
 						            @if(count($errors->getBags()["default"]->get("email")) > 0)
 						            <span>
@@ -30,12 +34,11 @@
 						            </span>
 						            @endif
 						        @endif
-						        </div>
 						    </div>
-						    <div class="pw">
+
+						    <div>
 						        Password
-						        <input class="login" type="password" name="password" id="password">
-						        <div class="errors">
+						        <input type="password" name="password">
 						        @if( count($errors) > 0 )
 						            @if(count($errors->getBags()["default"]->get("password")) > 0)
 						            <span>
@@ -43,19 +46,26 @@
 						            </span>
 						            @endif
 						        @endif
-						        </div>
 						    </div>
 
-						    <div class="remember_me">
-						        <input type="checkbox" name="remember"> Remember Me
+						    <div>
+						        Confirm Password
+						        <input type="password" name="password_confirmation">
+						        @if( count($errors) > 0 )
+						            @if(count($errors->getBags()["default"]->get("password")) > 0)
+						            <span>
+						                {{$errors->getBags()["default"]->get("password")[0]}}
+						            </span>
+						            @endif
+						        @endif
 						    </div>
 
-						    <div class="login_submit">
-						    	<button type="submit">Login</button>
+						    <div>
+						        <button type="submit">Register</button>
 						    </div>
+
 							</form>
-							{{-- </div> --}}
-				        </label>
+						</label>
 				    </div>
 		        </div>
 	        </div>

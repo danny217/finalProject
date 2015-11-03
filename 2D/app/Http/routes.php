@@ -11,9 +11,13 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/', ['middleware' => 'auth', function () {
     return view('welcome');
-});
+}]);
+
+Route::get("/home", ['middleware' => 'auth', function(){
+	return view("home");
+}]);
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');
@@ -24,14 +28,18 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 Route::get('auth/register', 'Auth\AuthController@getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
-Route::get('game', 'GameController@viewAll');
+Route::controllers([
+   'password' => 'Auth\PasswordController',
+]);
 
-Route::get('games/create', 'GameController@create');
-Route::post('games/create', 'GameController@postCreate');
+Route::get('Scores', 'GameController@viewAll');
 
-Route::get('games/{id}/edit', 'GameController@edit');
-Route::post('games/{id}/edit', 'GameController@postEdit');
+// Route::get('games/create', 'GameController@create');
+// Route::post('games/create', 'GameController@postCreate');
 
-Route::get('games/{id}/delete', 'GameController@delete');
+Route::get('user/{id}/edit', 'GameController@edit');
+Route::post('user/{id}/edit', 'GameController@postEdit');
 
-Route::get('games/{id}', 'GameController@view');
+Route::get('user/{id}/delete', 'GameController@delete');
+
+Route::get('user/{id}', 'GameController@view');
