@@ -1,13 +1,16 @@
-drop database if exists 2DGameDB;
-create database 2DGameDB;
-use 2DGameDB;
+drop database if exists ArrowDB;
+create database ArrowDB;
+use ArrowDB;
 
 create table Users(
 	id int auto_increment primary key,
-	username varchar(255) not null unique,
+	username varchar(100) not null unique,
 	password varchar(50) not null,
-	email varchar(255) not null unique, 
-);
+	email varchar(100) not null unique,
+	remember_token varchar(100),
+	created_at datetime,
+	updated_at datetime
+); 
 
 create table Levels(
 	id int not null primary key,
@@ -30,10 +33,10 @@ create table Enemies(
 create table Saves(
 	playerId int not null,
 	currentLevelId int not null,
-	score int not null,
-	-- itemId int not null,
-	primary key ("playerId", "gameId")
+	score int not null
 );
+
+insert into Saves(playerId, currentLevelId, score)values(1, 1, 29400);
 
 -- create table Items (
 -- 	id int not null auto_increment primary key,
