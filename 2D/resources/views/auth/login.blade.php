@@ -21,7 +21,7 @@
 						        
 						    <div class="email">
 						        Email
-						        <input class="login" type="email" name="email" value="{{ old('email') }}">
+						        <input class="login" type="text" name="email" value="{{ old('email') }}">
 						        <div class="errors">
 						        @if( count($errors) > 0 )
 						            @if(count($errors->getBags()["default"]->get("email")) > 0)

@@ -42,8 +42,8 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'username' => 'required|max:255|unique:Users',
-            'email' => 'required|email|max:255|unique:Users',
+            'name' => 'required|max:255|unique:users',
+            'email' => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed|min:6',
         ]);
     }
@@ -56,11 +56,16 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        // dd( $data['password'] . ":" . bcrypt($data['password']));
         return User::create([
-            'username' => $data['username'],
+            'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
     }
+    // this is for changing where the view goes, Danny
+    // public function getRegister()
+    // {
+    //     return view('auth.register');
+    // }
+
 }

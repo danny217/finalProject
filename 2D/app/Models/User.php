@@ -6,7 +6,7 @@ use DB;
 
 class User{
 
-	protected $id;
+	public $id;
 	public $name;
 	public $email;
 
@@ -19,65 +19,69 @@ class User{
     }
 
     private function insert(){
-    	$sql='INSERT into Users(username, password, email)values (:username, :password, :email)';
-    	DB::insert($sql, [':username'=>$this->username, ':password'=>$this->password, ':email'=>$this->email ]);
+    	$sql='INSERT into users(name, password, email)values (:name, :password, :email)';
+    	DB::insert($sql, [':name'=>$this->name, ':password'=>$this->password, ':email'=>$this->email ]);
     }
 
     private function update(){
-    	$sql = "UPDATE Users set username = :username, email = :email where id = :id";
-		DB::update($sql, [":username"=>$this->username, ":email"=>$this->email, ":id"=>$this->id ]);
+    	$sql = "UPDATE users set name = :name, email = :email where id = :id";
+		DB::update($sql, [":name"=>$this->name, ":email"=>$this->email, ":id"=>$this->id ]);
     }
 
     public static function delete($id){
-    	$sql="DELETE from Users where id = :id";
+    	$sql="DELETE from users where id = :id";
     	DB::delete($sql, [":id" => $id]);
     }
 
     public static function get($id){
-    	$sql = "SELECT * from Users, Saves where Users.id=Saves.playerId and Users.id = :id";
+    	$sql = "SELECT * from users, Saves where users.id=Saves.playerId and users.id = :id";
 
     	$row = DB::selectOne($sql, [":id"=>$id]);
 
     	$user = new User();
 		$user->id = $row->id;
-		$user->username = $row->username;
+		$user->name = $row->name;
 		$user->email = $row->email;
         $user->score = $row->score;
 		return $user;
 
     }
 
+    // public function getScore(){
+    //     return $this->score;
+    // }
+
     public static function getAll(){
-    	$sql = "SELECT * from Users";
+    	$sql = "select * from users";
     	$rows = DB::select($sql);
 
-    	$games = [];
+    	$scores = [];
 
     	foreach($rows as $row){
-    		$game = new Game();
-    		$game->id = $row["id"];
-    		$game->name = $row["name"];
-    		$game->year = $row["year"];
-    		$games[] = $game;
+    		$score = new User();
+    		$score->id = $row->id;
+    		$score->name = $row->name;
+    		$score->score = $row->score;
+    		$scores[] = $score;
     	}
-    	return $games;
+    	return $scores;
     }
 
     public function getId() {
         return $this->id;
     }
 
-    public static function addItem($id, $levelId, $score){
+    // public static function addItem($id, $levelId, $score){
 
-        $sql = 'insert into Saves(playerId, currentLevelId, score) values (:id, :levelId, :score)';
+    //     $sql = 'insert into Saves(playerId, currentLevelId, score) values (:id, :levelId, :score)';
 
-        $rows = DB::insert($sql, [":id"=>$id, ":levelId"=>$levelId, ":score"=>$score]);
+    //     $rows = DB::insert($sql, [":id"=>$id, ":levelId"=>$levelId, ":score"=>$score]);
         
-        return $rows;
-    }
+    //     return $rows;
+    // }
 
     public static function saveScore($id, $score){
-        $sql = 'insert into Saves(playerId, score) values (:id, :score)';
+        $sql = "UPDATE users set score = :score where id = :id";
 
         $rows = DB::insert($sql, [":id"=>$id, ":score"=>$score]);
         

@@ -2,14 +2,12 @@
 <html>
     <head>
         <title>Register</title>
-        
         <link href="<?php echo asset('css/normalize.css')?>" type="text/css" rel="stylesheet" />
         <link href="<?php echo asset('css/game.css')?>" type="text/css" rel="stylesheet" />
         <link href='https://fonts.googleapis.com/css?family=Luckiest+Guy' rel='stylesheet' type='text/css'>
         <script language="javascript" type="text/javascript" src="<?php echo asset('js/init.js')?>" ></script>
     </head>
     <body>
-
     	<div class="background">
 	        <div class="container">
 		        <div class="shield">
@@ -21,7 +19,7 @@
 
 						    <div>
 						        Username
-						        <input type="text" name="username" value="{{ old('username') }}">
+						        <input type="text" name="name" value="{{ old('name') }}">
 						    </div>
 
 						    <div>

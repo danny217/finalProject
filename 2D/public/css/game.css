@@ -73,7 +73,7 @@ body {
 .login {
 	/*font-family: 'Indie Flower', cursive;*/
 	/*font-family: 'Kaushan Script', cursive;*/
-	font-family: 'Luckiest Guy', cursive;
+	/*font-family: 'Luckiest Guy', cursive;*/
 	font-size: 20pt;
 	border-radius: 5px;
 	margin: 15px;
@@ -88,7 +88,7 @@ body {
 .register{
 	/*font-family: 'Indie Flower', cursive;*/
 	/*font-family: 'Kaushan Script', cursive;*/
-	font-family: 'Luckiest Guy', cursive;
+	/*font-family: 'Luckiest Guy', cursive;*/
 	font-size: 20pt;
 	border-radius: 5px;
 	margin: 15px;
@@ -141,12 +141,12 @@ body {
 
 input {
 	background-color: grey;
+	font-family: Arial;
 }
-/*.score {
-	position: absolute;
-	top: 5px;
-	left: 480px;
-	color: #FF7F00;
-	font-family: Helvetica, sans-serif;
-	cursor: default;
-}*/
+
+.score{
+    display: none;
+    position: absolute;
+    top: 1000px;
+    left: 10px;
+}

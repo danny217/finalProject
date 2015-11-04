@@ -11,12 +11,19 @@
 |
 */
 
-// Route::get('/', ['middleware' => 'auth', function () {
-//     return view('welcome');
-// }]);
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// Route::get("/home", ['middleware' => 'auth', 'uses' => 'GameController@getUser']);
 
 Route::get("/home", ['middleware' => 'auth', function(){
 	return view("home");
+}]);
+
+Route::get("/user", ['middleware' => 'auth', function(){
+	$user = Auth::user();
+	return view("user", ["user" => $user]);
 }]);
 
 // Authentication routes...
@@ -32,14 +39,14 @@ Route::controllers([
    'password' => 'Auth\PasswordController',
 ]);
 
-Route::get('Scores', 'GameController@viewAll');
+Route::get('scores', 'GameController@viewAll');
 
 // Route::get('games/create', 'GameController@create');
-// Route::post('games/create', 'GameController@postCreate');
+Route::post('games/create', 'GameController@postCreate');
 
 Route::get('user/{id}/edit', 'GameController@edit');
 Route::post('user/{id}/edit', 'GameController@postEdit');
 
 Route::get('user/{id}/delete', 'GameController@delete');
 
-Route::get('user/{id}', 'GameController@view');
+// Route::get('user', 'GameController@view');

@@ -3,30 +3,39 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Auth;
 use Request;
 use App\Models\User;
 
 class GameController extends Controller {
 
+	// public function getUser() {
+	// 	if(Auth::user()) {
+	// 		$user = Auth::user();
+	// 	}
+
+	// 	return view('home', ['user' => $user]);
+	// }
+
 	public function viewAll(){
-		$games = Game::getAll();
-		return view("all_games", ["games" => $games]);
+		$scores = User::getAll();
+		return view("high_scores", ["scores" => $scores]);
 	}
 
-	public function view($id){
-		$user = User::get($id);
+	public function view(){
+		$user = Auth::user();
 		return view("user", ["user" => $user]);
 	}
 
-	public function create($id){
+	// public function create($id){
 
-		User::saveScore($id, Request::input('score'));
-		// $user = new User;
-		// $user->id = $id;
-		// $user->save();
+	// 	User::saveScore($id, Request::input('score'));
+	// 	// $user = new User;
+	// 	// $user->id = $id;
+	// 	// $user->save();
 
-		// return redirect("/invoice/" . $user->getId());
-	}
+	// 	// return redirect("/invoice/" . $user->getId());
+	// }
 
 	public function postCreate($id){ //this is where I was
 

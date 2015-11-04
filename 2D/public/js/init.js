@@ -32,6 +32,8 @@ var heroXPos=0;
 var heroYPos=500;
 var crossHair;
 
+var hiddenScore = document.querySelector("span.score");
+
 // get random number between X and Y
 function getRand(x, y) 
 {
@@ -90,7 +92,6 @@ function ready(event)
 
 function queueLoaded(event)
 {
-
     var groundImg = queue.getResult("backgroundImage");
     ground = new createjs.Shape();
     ground.graphics.beginBitmapFill(groundImg).drawRect(0, -225, WIDTH + groundImg.width,  HEIGHT + groundImg.height);
@@ -99,7 +100,7 @@ function queueLoaded(event)
     stage.addChild(ground);
 
     //Add Score
-    scoreText = new createjs.Text("1UP: " + score.toString(), "36px Arial", "#FFF");
+    scoreText = new createjs.Text("score: " + score.toString(), "36px Arial", "#FFF");
     scoreText.x = 10;
     scoreText.y = 10;
     stage.addChild(scoreText);
@@ -221,6 +222,8 @@ function gameOver()
     createjs.Sound.removeSound("background");
     createjs.Sound.play("gameOverSound");
     document.getElementById('game-over').style.display = "block";
+    var elem = document.getElementById("example"); // Get text field
+    elem.value = hiddenScore.innerHTML; // Change field
     play = false;
 }
 
@@ -278,6 +281,7 @@ function handleClick()
     //stage.enableDOMEvents(true);
 
     score = 0;
+    hiddenScore.innerHTML = 0;
     missed = 0;
     enemies = [];
     enemiesS = [];
@@ -317,6 +321,12 @@ function handleMouseDown(event)
 
                     score += 100;
                     scoreText.text = "1UP: " + score.toString();
+
+                    var value = 100;
+                    var current = parseInt( hiddenScore.innerHTML );
+                    hiddenScore.innerHTML = current + value;
+
+                   
                 }
 
                 if(collisionEnemy(heroAni.x, heroAni.y, 75))
@@ -344,6 +354,10 @@ function handleMouseDown(event)
 
                     score += 100;
                     scoreText.text = "1UP: " + score.toString();
+
+                    var value = 100;
+                    var current = parseInt( hiddenScore.innerHTML );
+                    hiddenScore.innerHTML = current + value;
                 } 
 
 

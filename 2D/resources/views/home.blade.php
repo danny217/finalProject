@@ -6,7 +6,8 @@
 </head>
 <body>
 	<h1>Home</h1>
-	<a href="/user/{id}">Your Page</a>
+	
+	<a href="/scores">High Scores</a>
 	<a href="/auth/logout">Logout</a>
 </body>
 </html>

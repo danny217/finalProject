@@ -2,11 +2,12 @@ drop database if exists ArrowDB;
 create database ArrowDB;
 use ArrowDB;
 
-create table Users(
+create table users(
 	id int auto_increment primary key,
-	username varchar(100) not null unique,
+	name varchar(100) not null unique,
 	password varchar(50) not null,
 	email varchar(100) not null unique,
+	score int not null,
 	remember_token varchar(100),
 	created_at datetime,
 	updated_at datetime
@@ -30,14 +31,13 @@ create table Enemies(
 	sprite varchar(255)
 );
 
-create table Saves(
-	playerId int not null,
-	currentLevelId int not null,
-	score int not null
-);
 
-insert into Saves(playerId, currentLevelId, score)values(1, 1, 29400);
+insert into users(score)values(29400) where id = 1;
 
+-- create table Saves(
+-- 	playerId int not null,
+-- 	score int not null
+-- );
 -- create table Items (
 -- 	id int not null auto_increment primary key,
 -- 	name varchar(255),
