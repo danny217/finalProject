@@ -37,12 +37,19 @@ class GameController extends Controller {
 	// 	// return redirect("/invoice/" . $user->getId());
 	// }
 
-	public function postCreate($id){ //this is where I was
+	public function postCreate(){ //this is where I was
+		if (Auth::check())
+		{
+		   $id = Auth::user()->id;
 
+			User::saveScore($id, Request::input('score'));
+		}
 
-		User::saveScore($id, Request::input('score'));
+		// $user = Auth::user();
 
-		// return redirect("/invoice/" . $id);
+		// User::saveScore(["id" => $id], Request::input('score'));
+
+		return redirect("user");
 
 	}
 
@@ -60,18 +67,19 @@ class GameController extends Controller {
 	// 	return redirect("/");
 	// }
 
-	public function edit($id){
-		$game = Game::get($id);
-		return view("update_game", ["game"=>$game, "id"=>$id]);
+	public function edit(){
+		$user = Auth::user();
+		$id = Auth::user()->id;
+		return view("update", ["user"=>$user, "id"=>$id]);
 	} 
 
-	public function postEdit($id){
-		$game = Game::get($id);
-		$game->name = Request::input('name');
-		$game->year = Request::input('year');
-		$game->save();
+	public function postEdit(){
+		$user = Auth::user();
+		$user->name = Request::input('name');
+		$user->email = Request::input('email');
+		$user->save();
 
-		return redirect("games");
+		return redirect("user");
 	}
 
 	public function delete($id){

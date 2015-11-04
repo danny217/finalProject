@@ -2,30 +2,43 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>All Games</title>
+	<title>High Scores</title>
+	<link href="<?php echo asset('css/normalize.css')?>" type="text/css" rel="stylesheet" />
+    <link href="<?php echo asset('css/game.css')?>" type="text/css" rel="stylesheet" />
+    <link href='https://fonts.googleapis.com/css?family=Luckiest+Guy' rel='stylesheet' type='text/css'>
 </head>
 <body>
-	<h1>Games!!!!</h1>
-	<table>
-	<div>
-		<tr>
-			<th> Userame </th>
-			<th> Score </th>
-			<th> Edit </th>
-			<th> Delete </th>
-		</tr>
+	<div class="background">
+        <div class="container">
+        	<div class="sign">
+        		<img id="shield" src="<?php echo asset('assets/wooden_shield_thing.png')?>">
+				<div class="table_container">
+					<h1>High Scores</h1>
+					<table class="high">
+					<div class="table_score">
+						<tr >
+							<th> Username </th>
+							<th> Score </th>
+						</tr>
+					</div>
+					<div>
+						@foreach($scores as $score)
+						<tr>
+							<td><a href="user">{{$score->name}}</a></td>
+							<td>{{$score->score}}</td>
+						</tr>
+						@endforeach
+					</div>
+					</table>
+					<div class="home_link">
+						<a href="/home">play again</a>
+					</div>
+					<div>
+						<a href="/auth/logout">Logout</a>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div>
-		@foreach($scores as $score)
-		<tr>
-			<td><a href="user">{{$score->name}}</a></td>
-			<td>{{$score->score}}</td>
-
-		</tr>
-		@endforeach
-		<a href="/games">Home</a><br><br>
-		<a href="games/create">New Game</a><br><br>
-	</div>
-	</table>
 </body>
 </html>

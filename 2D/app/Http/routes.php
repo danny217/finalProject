@@ -12,13 +12,15 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
-// Route::get("/home", ['middleware' => 'auth', 'uses' => 'GameController@getUser']);
+// Route::get("/", ['middleware' => 'auth', function () {
+//     return view('welcome');
+// }]);
 
 Route::get("/home", ['middleware' => 'auth', function(){
-	return view("home");
+	return view('welcome');
 }]);
 
 Route::get("/user", ['middleware' => 'auth', function(){
@@ -42,11 +44,12 @@ Route::controllers([
 Route::get('scores', 'GameController@viewAll');
 
 // Route::get('games/create', 'GameController@create');
-Route::post('games/create', 'GameController@postCreate');
+// Route::post('save', 'GameController@postCreate');
+Route::post("/save", 'GameController@postCreate');
 
-Route::get('user/{id}/edit', 'GameController@edit');
-Route::post('user/{id}/edit', 'GameController@postEdit');
+Route::get('user/edit', 'GameController@edit');
+Route::post('user/edit', 'GameController@postEdit');
 
-Route::get('user/{id}/delete', 'GameController@delete');
+// Route::get('user/{id}/delete', 'GameController@delete');
 
 // Route::get('user', 'GameController@view');

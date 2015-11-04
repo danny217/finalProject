@@ -13,26 +13,26 @@ create table users(
 	updated_at datetime
 ); 
 
-create table Levels(
-	id int not null primary key,
-	background varchar(255),
-	enemyNum int,
-	enemyLvlMax int,
-	enemiesAllowed int,
-	enemyApproachSpeed int,
-	maxScore int
+-- create table Levels(
+-- 	id int not null primary key,
+-- 	background varchar(255),
+-- 	enemyNum int,
+-- 	enemyLvlMax int,
+-- 	enemiesAllowed int,
+-- 	enemyApproachSpeed int,
+-- 	maxScore int
 
-);
+-- );
 
-create table Enemies(
-	id int not null auto_increment primary key,
-	type varchar(255),
-	enemyLvl int,
-	sprite varchar(255)
-);
+-- create table Enemies(
+-- 	id int not null auto_increment primary key,
+-- 	type varchar(255),
+-- 	enemyLvl int,
+-- 	sprite varchar(255)
+-- );
 
 
-insert into users(score)values(29400) where id = 1;
+-- insert into users(score)values(29400) where id = 1;
 
 -- create table Saves(
 -- 	playerId int not null,

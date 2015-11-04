@@ -7,24 +7,25 @@
         <link href='https://fonts.googleapis.com/css?family=Luckiest+Guy' rel='stylesheet' type='text/css'>
     </head>
     <body>
-        <!-- <span class="score">This span</span> -->
+
         <canvas id="myCanvas"></canvas>
             <span class="score">0</span>
-        <!-- <div class="score">SCORE: <span id="score"></span></div> -->
+
         <div class="game-over" id="game-over">GAME OVER
-            <form method="post">
-            {{-- {!! csrf_field() !!} --}}
-            <input id="example" type="hidden" name="score" value="0">
-            <div>
-                <span onclick="handleClick()">Click Here To Restart</span>
-            </div>
-            <div>Login or register to save</div>
-            <div>
-                <a href="auth/login"><button>Login</button></a>
-            </div>
-            <div>
-                <a href="auth/register"><button>Register</button></a>
-            </div>
+            <img id="sign" src="<?php echo asset('assets/wooden_board.png')?>">
+            <form method="post" action="/save">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input id="example" type="hidden" name="score" value="0">
+                <div>
+                    <span onclick="handleClick()">Click Here To Restart</span>
+                </div>
+                <div>Login or register to save</div>
+                <div>
+                    <a href="/save"><button>Save<button></a>
+                </div>
+                <div>
+                    <a href="/auth/logout">Logout</a>
+                </div>
             </form>
         </div>
     </body>
