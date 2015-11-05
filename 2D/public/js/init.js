@@ -79,7 +79,7 @@ function queueLoaded(event) {
     stage.addChild(ground);
 
     //Add score
-    scoreText = new createjs.Text("score: " + score.toString(), "36px Arial", "#FFF");
+    scoreText = new createjs.Text("Score: " + score.toString(), "36px Arial", "#FFF");
     scoreText.x = 10;
     scoreText.y = 10;
     stage.addChild(scoreText);
@@ -123,7 +123,21 @@ function queueLoaded(event) {
     // Set up events AFTER the game is loaded
     window.onmousemove = handleMouseMove;
     window.onmousedown = handleMouseDown;
-    stage.update();    
+
+    function keydown(event) {
+        if (event.keyCode === 32) {//if keyCode is "spacebar"
+            createjs.Ticker.removeEventListener("tick", tickEvent);
+            createjs.Ticker.removeEventListener('tick', stage);
+            scope.status = "paused";
+        }   
+        if (event.keyCode === 37) {
+            createjs.Ticker.addEventListener("tick", tickEvent);
+            createjs.Ticker.addEventListener('tick', stage);
+            scope.status = "running";
+        }
+    } 
+    window.onkeydown = keydown;  
+    stage.update();  
 }
 
 //enemy vector
@@ -185,8 +199,6 @@ function gameOver() {
     play = false;
 }
 
-// Ticker.setPaused(true);
-
 function tickEvent(event) {
 
     var deltaS = event.delta / 1000;
@@ -222,14 +234,13 @@ function handleClick() {
 
     document.getElementById('game-over').style.display = "none";
 
-    createjs.Sound.play("background", {loop: -1});
     score = 0;
     hiddenScore.innerHTML = 0;
     missed = 0;
     enemies = [];
     enemiesS = [];
-    stage.update();
-    queueLoaded(event);
+    ready(event);
+    // createjs.Sound.play("background", {loop: -1});
 }
 
 function handleMouseDown(event) {

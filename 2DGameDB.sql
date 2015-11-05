@@ -4,11 +4,11 @@ use ArrowDB;
 
 create table users(
 	id int auto_increment primary key,
-	name varchar(100) not null unique,
-	password varchar(50) not null,
-	email varchar(100) not null unique,
+	name varchar(255) not null unique,
+	password varchar(255) not null,
+	email varchar(255) not null unique,
 	score int not null,
-	remember_token varchar(100),
+	remember_token varchar(255),
 	created_at datetime,
 	updated_at datetime
 ); 

@@ -20,7 +20,13 @@ Route::get('/', function () {
 // }]);
 
 Route::get("/home", ['middleware' => 'auth', function(){
-	return view('welcome');
+	$user = Auth::user();
+	return view('splash', ["user" => $user]);
+}]);
+
+Route::get("/game", ['middleware' => 'auth', function(){
+	$user = Auth::user();
+	return view('game', ["user" => $user]);
 }]);
 
 Route::get("/user", ['middleware' => 'auth', function(){

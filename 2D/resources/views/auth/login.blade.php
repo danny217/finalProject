@@ -21,7 +21,7 @@
 						        
 						    <div class="email">
 						        Email
-						        <input class="login" type="text" name="email" value="{{ old('email') }}">
+						        <input class="input_login" type="text" name="email" value="{{ old('email') }}">
 						        <div class="errors">
 						        @if( count($errors) > 0 )
 						            @if(count($errors->getBags()["default"]->get("email")) > 0)
@@ -34,7 +34,7 @@
 						    </div>
 						    <div class="pw">
 						        Password
-						        <input class="login" type="password" name="password" id="password">
+						        <input class="input_login" type="password" name="password" id="password">
 						        <div class="errors">
 						        @if( count($errors) > 0 )
 						            @if(count($errors->getBags()["default"]->get("password")) > 0)

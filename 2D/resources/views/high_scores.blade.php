@@ -10,7 +10,7 @@
 <body>
 	<div class="background">
         <div class="container">
-        	<div class="sign">
+        	<div class="shield">
         		<img id="shield" src="<?php echo asset('assets/wooden_shield_thing.png')?>">
 				<div class="table_container">
 					<h1>High Scores</h1>
@@ -24,17 +24,17 @@
 					<div>
 						@foreach($scores as $score)
 						<tr>
-							<td><a href="user">{{$score->name}}</a></td>
+							<td><a class="white_link" href="user">{{$score->name}}</a></td>
 							<td>{{$score->score}}</td>
 						</tr>
 						@endforeach
 					</div>
 					</table>
 					<div class="home_link">
-						<a href="/home">play again</a>
+						<a class="button" href="/game">play again</a>
 					</div>
-					<div>
-						<a href="/auth/logout">Logout</a>
+					<div class="link_logout_score">
+						<a class="button" href="/auth/logout">Logout</a>
 					</div>
 				</div>
 			</div>

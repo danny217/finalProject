@@ -52,7 +52,9 @@ class User{
     // }
 
     public static function getAll(){
-    	$sql = "select * from users";
+    	// $sql = "select * from users";
+        $sql = "SELECT id, name, score, @i:=@i+1 AS rank   FROM users   ORDER BY score DESC LIMIT 5";
+
     	$rows = DB::select($sql);
 
     	$scores = [];
