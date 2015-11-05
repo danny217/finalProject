@@ -77,6 +77,19 @@
 	height: 60px;
 }
 
+.edit_submit button {
+	padding-top: 7px;
+	border-radius: 13px;
+	font-size: 20pt;
+	margin-top: 15px;
+	background: url("../assets/smaller_button.png") ;
+	background-position: center;
+	border-color: #888;
+	text-shadow: -1px 0 #555, 0 1px #555, 1px 0 #555, 0 -1px #555;
+	color: #000;
+	height: 60px;
+}
+
 .register_container button {
 	color: black;
 	padding-top: 7px;
@@ -153,6 +166,16 @@
 	font-size: 25pt;
 }
 
+.container_edit {
+	color: white;
+	position: relative;
+    z-index: 9999;
+    text-align: center;
+    margin-top: -370px; 
+	font-family: 'Luckiest Guy', cursive;
+	font-size: 25pt;
+}
+
 .table_score {
 	margin-top: -25px;
 }
@@ -175,6 +198,10 @@ th, td {
 
 .table_user {
 	margin-top: -40px;
+}
+
+.user_header{
+	text-shadow: -1px 0 #555, 0 1px #555, 1px 0 #555, 0 -1px #555;
 }
 
 .button {
@@ -375,4 +402,25 @@ input {
 	background: url("../assets/smaller_button.png");
 	background-size: cover;
 	border: none;
+}
+
+.input_edit {
+	font-family: Arial;
+	border-radius: 5px;
+	margin: 15px;
+	width: 300px;
+}
+
+.email_edit {
+	margin-left: 60px;
+}
+
+.name_edit {
+	margin-top: -129px;
+	margin-left: -16px;
+}
+
+.home_edit{
+	height: 60px;
+	margin-left: 672px;
 }
